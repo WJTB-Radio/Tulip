@@ -82,6 +82,8 @@ The name of the show, case insensitive.
 
 ## /getshowproperty \<name\> \<property\>
 
+Note: to run this command, you need the `tulip-admin` role.
+
 Gets a property of a show.
 
 #### name
@@ -100,7 +102,30 @@ The valid properties are:
 
 ## /setshowproperty \<name\> \<property\> \<value\>
 
+Note: to run this command, you need the `tulip-admin` role.
+
 Sets a property of a show.
 
-Similar to /getshowproperty.
+#### name
 
+The name of the show, case insensitive.
+
+#### property
+
+The name of the property you would like to get.
+
+The valid properties are:
+
+```
+['name', 'desc', 'hosts', 'poster', 'discord', 'start_time', 'end_time', 'is_running']
+```
+
+#### value
+
+The new value of the property.
+
+This will accept 12 hour or 24 hour time for properties that accept a time.
+
+For `discord`, seperate each discord handle with a space.
+
+`is_running` accepts `true` or `false`.
