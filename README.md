@@ -1,3 +1,7 @@
+# Tulip
+
+A discord bot that lets DJs update wjtb.njit.edu easily.
+
 ## /notdoingmyshow [day]
 
 Announce that you aren't doing your show. 
