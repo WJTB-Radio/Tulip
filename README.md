@@ -26,6 +26,8 @@ Like /displayshow but displays information about the currently playing show.
 
 ## /addshow \<name\> \<hosts\> \<host discords\> \<desc\> \<poster\> \<day\> \<start time\> \<end time\>
 
+Note: to run this command, you need the `tulip-admin` role.
+
 Add a show to the database.
 
 #### name
@@ -61,6 +63,8 @@ Time the show starts at. 12 hour time and 24 hour time are both accepted.
 Time the show ends at. 12 hour and 24 hour time are both accepted.
 
 ## /removeshow \<name\>
+
+Note: to run this command, you need the `tulip-admin` role.
 
 Remove a show from the database.
 
