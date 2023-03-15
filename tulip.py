@@ -197,7 +197,7 @@ def format_property(property, value, day):
 	if(property in ["start_time", "end_time"]):
 		return f"<t:{get_timestamp(value, day)}:t>"
 	if(property == "is_running"):
-		return 1 if value == "true" else 0
+		return "true" if value == 1 else "false"
 	return value
 
 property_list = ["name", "desc", "hosts", "poster", "discord", "start_time", "end_time", "is_running"] 
@@ -215,6 +215,7 @@ async def setshowproperty(context, name:str, property:str, value:str):
 			return
 		value = parsed_value
 	if(property == "is_running"):
+		value = value.lower()
 		if(value == "true"):
 			value = 1
 		elif(value == "false"):
