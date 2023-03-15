@@ -42,6 +42,10 @@ Human readable list of hosts.
 
 All of the discords of the hosts. If there are multiple, seperate them by one space.
 
+Discords should be in this format: NameOfPerson#1234
+
+Important: Discord names are case sensitive.
+
 #### desc
 
 Human readable description of the show.
