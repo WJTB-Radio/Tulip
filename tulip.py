@@ -6,8 +6,13 @@ from discord import app_commands
 import sqlite3 as sqlite
 from datetime import *
 from pytz import timezone
+import sys
 
-DB_PATH = "../wjtb_db/database.sqlite3"
+if(len(sys.argv) != 2):
+	print("please supply a path to the sqlite3 database as a commandline argument")
+	sys.exit()
+
+DB_PATH = sys.argv[1]#"../wjtb_db/database.sqlite3"
 GUILD_ID = 172047876384358400
 
 intents = discord.Intents.default()
