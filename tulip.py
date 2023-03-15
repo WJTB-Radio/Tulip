@@ -37,11 +37,9 @@ def get_timestamp(time_seconds, w, end_time_seconds=None):
 	cur_dt = datetime.now(timezone("US/Eastern"))
 	cur_w = cur_dt.weekday()
 	if(w < cur_w):
-		print(f"cur_w = {cur_w}, w = {w} 1 adding 7")
 		w += 7
 	cur_time_seconds = cur_dt.second+cur_dt.minute*60+cur_dt.hour*60*60
 	if(w == cur_w and cur_time_seconds > end_time_seconds):
-		print(f"adding 7 2 cur_time_seconds = {cur_time_seconds} time_seconds = {time_seconds}")
 		w += 7
 	cur_date = cur_dt.date()
 	d = cur_date + timedelta(days=w-cur_w)
@@ -195,6 +193,100 @@ async def removeshow(context, name:str):
 	con.close()
 	await context.response.send_message(message)
 
+def format_property(property, value, day):
+	if(property in ["start_time", "end_time"]):
+		return f"<t:{get_timestamp(value, day)}:t>"
+	if(property == "is_running"):
+		return 1 if value == "true" else 0
+	return value
+
+property_list = ["name", "desc", "hosts", "poster", "discord", "start_time", "end_time", "is_running"] 
+@tree.command(name="setshowproperty", description="Edit a property of a show.", guild=discord.Object(id=GUILD_ID))
+async def setshowproperty(context, name:str, property:str, value:str):
+	if(not await check_admin(context)):
+		return
+	if(not property in property_list):
+		await context.response.send_message(f"Error: \"{property}\" is not a valid property.\nThe valid properties are:\n```json\n{property_list}\n```")
+		return
+	if(property == "start_time" or property == "end_time"):
+		parsed_value = parse_time(value)
+		if(value is None):
+			await context.response.send_message(f"Error: {value} is not a valid time.")
+			return
+		value = parsed_value
+	if(property == "is_running"):
+		if(value == "true"):
+			value = 1
+		elif(value == "false"):
+			value = 0
+		else:
+			await context.response.send_message(f"Error: is_running must be true or false.")
+			return
+	if(property == "discord"):
+		value = " "+value.strip()+" "
+	con = sqlite.connect(DB_PATH)
+	cur = con.cursor()
+	day = ""
+	w = 0
+	i = 0
+	old_value = ""
+	for d in days_of_week:
+		result = cur.execute(f"SELECT {property}, name, start_time, end_time FROM {d} WHERE name = ? COLLATE NOCASE", (name, )).fetchone()
+		if(not result is None):
+			w = i
+			day = d
+			old_value = result[0]
+			name = result[1]
+			if(property in ["start_time", "end_time"]):
+				valid = True
+				if(property == "start_time"):
+					if(value >= result[3]):
+						valid = False
+				if(property == "end_time"):
+					if(value <= result[2]):
+						valid = False
+				if(not valid):
+					await context.response.send_message("Error: start_time must be before end_time.")
+					return
+			break
+		i += 1
+	if(day == ""):
+		await context.response.send_message(f"Error: no show named \"{name}\" found.")
+		con.close()
+		return
+	cur.execute(f"UPDATE {day} SET {property} = ? WHERE name = ?", (value, name))
+	con.commit()
+	con.close()
+	await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {format_property(property, old_value, w)}\n**after**: {property} = {format_property(property, value, w)}")
+
+@tree.command(name="getshowproperty", description="Get a property of a show.", guild=discord.Object(id=GUILD_ID))
+async def getshowproperty(context, name:str, property:str):
+	if(not await check_admin(context)):
+		return
+	if(not property in property_list):
+		await context.response.send_message(f"Error: \"{property}\" is not a valid property.\nThe valid properties are:\n```json\n{property_list}\n```")
+		return
+	con = sqlite.connect(DB_PATH)
+	cur = con.cursor()
+	day = ""
+	w = 0
+	i = 0
+	value = ""
+	for d in days_of_week:
+		result = cur.execute(f"SELECT {property}, name FROM {d} WHERE name = ? COLLATE NOCASE", (name, )).fetchone()
+		if(not result is None):
+			w = i
+			day = d
+			value = result[0]
+			name = result[1]
+			break
+		i += 1
+	con.close()
+	if(day == ""):
+		await context.response.send_message(f"Error: no show named \"{name}\" found.")
+		return
+	await context.response.send_message(f"Show \"{name}\"\n{property} = {format_property(property, value, w)}")
+
 async def set_is_running(context, day, is_running):
 	day = day.lower()
 	username = (context.user.name+"#"+context.user.discriminator)
@@ -208,19 +300,35 @@ async def set_is_running(context, day, is_running):
 		w = 0
 	time = dt.second+dt.minute*60+dt.hour*60*60
 	
+	start_time = -1
 	if(day == ""):
 		for i in range(w, len(days_of_week)+w):
 			d = days_of_week[i%len(days_of_week)]
-			result = 0
 			if(i == w and not weekend):
 				# this is the current day
-				result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ? AND end_time > ?", (username, 1-is_running, time))
-			else:
-				# this is a day in the future
-				result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ?", (username, 1-is_running))
-			if(not result.fetchone() is None):
+				result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ? AND end_time > ?", (username, 1-is_running, time)).fetchone()
+				if(not result is None):
+					day = d
+					start_time = result[0]
+					break
+			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ?", (username, 1-is_running)).fetchone()
+			if (not result is None):
 				day = d
+				start_time = result[0]
 				break
+	else:
+		i = days_of_week.index(day)
+		if(i == w and not weekend):
+			# this is the current day
+			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ? AND end_time > ? ORDER BY start_time", (username, 1-is_running, time)).fetchone()
+			if(not result is None):
+				day = d
+				start_time = result[0]
+		if(start_time != -1):
+			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ? ORDER BY start_time", (username, 1-is_running)).fetchone()
+			if (not result is None):
+				day = d
+				start_time = result[0]
 	message = ""
 	if(day == ""):
 		if(is_running == 0):
@@ -230,10 +338,10 @@ async def set_is_running(context, day, is_running):
 	elif(not day in days_of_week):
 		message = "Error: Invalid day of the week."
 	else:
-		result = cur.execute(f"SELECT name, start_time, end_time FROM {day} WHERE is_running = ? AND discord LIKE '% '||?||' %' ORDER BY start_time", (1-is_running, username))
+		result = cur.execute(f"SELECT name, start_time, end_time FROM {day} WHERE is_running = ? AND start_time = ?", (1-is_running, start_time))
 		row = result.fetchone()
 		if(not row is None):
-			cur.execute(f"UPDATE {day} SET is_running = ? WHERE is_running = ? AND discord LIKE '% '||?||' %' ORDER BY start_time LIMIT 1", (is_running, 1-is_running, username))
+			cur.execute(f"UPDATE {day} SET is_running = ? WHERE is_running = ? AND start_time = ? LIMIT 1", (is_running, 1-is_running, start_time))
 			show_name = row[0]
 			time = row[1]
 			end_time = row[2]
