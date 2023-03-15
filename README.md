@@ -79,3 +79,28 @@ Remove a show from the database.
 #### name
 
 The name of the show, case insensitive.
+
+## /getshowproperty \<name\> \<property\>
+
+Gets a property of a show.
+
+#### name
+
+The name of the show, case insensitive.
+
+#### property
+
+The name of the property you would like to get.
+
+The valid properties are:
+
+```
+['name', 'desc', 'hosts', 'poster', 'discord', 'start_time', 'end_time', 'is_running']
+```
+
+## /setshowproperty \<name\> \<property\> \<value\>
+
+Sets a property of a show.
+
+Similar to /getshowproperty.
+

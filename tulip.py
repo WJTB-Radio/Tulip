@@ -184,9 +184,9 @@ async def removeshow(context, name:str):
 	con = sqlite.connect(DB_PATH)
 	cur = con.cursor()
 	for day in days_of_week:
-		result = cur.execute(f"SELECT name FROM {day} WHERE name = ? COLLATE NOCASE", (name, )).fetchone()
+		result = cur.execute(f"SELECT start_time FROM {day} WHERE name = ? COLLATE NOCASE ORDER BY start_time", (name, )).fetchone()
 		if(not result is None):
-			cur.execute(f"DELETE FROM {day} WHERE name = ? COLLATE NOCASE", (name, ))
+			cur.execute(f"DELETE FROM {day} WHERE start_time = ?", (result[0], ))
 			con.commit()
 			message = f"Show \"{name}\" has been deleted."
 			break
@@ -229,6 +229,7 @@ async def setshowproperty(context, name:str, property:str, value:str):
 	day = ""
 	w = 0
 	i = 0
+	start_time = 0
 	old_value = ""
 	for d in days_of_week:
 		result = cur.execute(f"SELECT {property}, name, start_time, end_time FROM {d} WHERE name = ? COLLATE NOCASE", (name, )).fetchone()
@@ -237,6 +238,7 @@ async def setshowproperty(context, name:str, property:str, value:str):
 			day = d
 			old_value = result[0]
 			name = result[1]
+			start_time = result[2]
 			if(property in ["start_time", "end_time"]):
 				valid = True
 				if(property == "start_time"):
@@ -254,7 +256,7 @@ async def setshowproperty(context, name:str, property:str, value:str):
 		await context.response.send_message(f"Error: no show named \"{name}\" found.")
 		con.close()
 		return
-	cur.execute(f"UPDATE {day} SET {property} = ? WHERE name = ?", (value, name))
+	cur.execute(f"UPDATE {day} SET {property} = ? WHERE start_time = ?", (value, start_time))
 	con.commit()
 	con.close()
 	await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {format_property(property, old_value, w)}\n**after**: {property} = {format_property(property, value, w)}")
