@@ -12,7 +12,7 @@ if(len(sys.argv) != 2):
 	print("please supply a path to the sqlite3 database as a commandline argument")
 	sys.exit()
 
-DB_PATH = sys.argv[1]#"../wjtb_db/database.sqlite3"
+DB_PATH = sys.argv[1]
 GUILD_ID = 172047876384358400
 
 intents = discord.Intents.default()
@@ -52,9 +52,9 @@ def get_timestamp(time_seconds, w, end_time_seconds=None):
 
 def format_show(name, hosts, desc, day, start_time, end_time, is_running):
 	w = days_of_week.index(day)
-	time = f"<t:{get_timestamp(start_time, w)}:t>-<t:{get_timestamp(end_time, w)}:t>"
+	time = f"<t:{get_timestamp(start_time, w, end_time)}:t>-<t:{get_timestamp(end_time, w)}:t>"
 	running = "" if is_running == 1 else "**The next show has been cancelled.**"
-	return f"**{name}**\n{time}\n**hosted by**\n{hosts}\n**description**\n{desc}\n\n{running}"
+	return f"**{name}**\n{time}\n{day}\n**hosted by**\n{hosts}\n**description**\n{desc}\n\n{running}"
 
 @tree.command(name="displayshow", description="Display some details about a specific show.", guild=discord.Object(id=GUILD_ID))
 async def displayshow(context, name:str):
