@@ -1,4 +1,4 @@
-#!/bin/python3
+#!/bin/python3.8
 
 import discord
 from discord.ext import commands
