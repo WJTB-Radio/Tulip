@@ -210,7 +210,7 @@ async def setshowproperty(context, name:str, property:str, value:str):
 		return
 	if(property == "start_time" or property == "end_time"):
 		parsed_value = parse_time(value)
-		if(value is None):
+		if(parsed_value is None):
 			await context.response.send_message(f"Error: {value} is not a valid time.")
 			return
 		value = parsed_value
