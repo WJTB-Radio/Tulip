@@ -1,4 +1,4 @@
-#!/afs/cad/linux/anaconda3.9.13/anaconda/bin/python3.9
+#!/usr/local/bin/python3
 
 import discord
 from discord.ext import commands

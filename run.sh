@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./tulip.py ../database.sqlite3
+./tulip.py ../database/database.sqlite3
