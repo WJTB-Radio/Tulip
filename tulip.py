@@ -150,7 +150,7 @@ async def check_admin(context):
 async def addshow(context, name:str, hosts:str, host_discords:str, desc:str, poster:str, day:str, start_time:str, end_time:str):
 	if(not await check_admin(context)):
 		return
-	host_discords = " "+host_discords.strip()+" "
+	host_discords = ":"+host_discords.strip()+":"
 	day = day.lower()
 	message = ""
 	if(not day in days_of_week):
@@ -229,7 +229,7 @@ async def setshowproperty(context, name:str, property:str, value:str):
 			await context.response.send_message(f"Error: is_running must be true or false.")
 			return
 	if(property == "discord"):
-		value = " "+value.strip()+" "
+		value = ":"+value.strip()+":"
 	con = sqlite.connect(DB_PATH)
 	cur = con.cursor()
 	day = ""
@@ -315,12 +315,12 @@ async def set_is_running(context, day, is_running):
 			d = days_of_week[i%len(days_of_week)]
 			if(i == w and not weekend):
 				# this is the current day
-				result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ? AND end_time > ?", (username, 1-is_running, time)).fetchone()
+				result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '%:'||?||':%' AND is_running = ? AND end_time > ?", (username, 1-is_running, time)).fetchone()
 				if(not result is None):
 					day = d
 					start_time = result[0]
 					break
-			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ?", (username, 1-is_running)).fetchone()
+			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '%:'||?||':%' AND is_running = ?", (username, 1-is_running)).fetchone()
 			if (not result is None):
 				day = d
 				start_time = result[0]
@@ -329,12 +329,12 @@ async def set_is_running(context, day, is_running):
 		i = days_of_week.index(day)
 		if(i == w and not weekend):
 			# this is the current day
-			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ? AND end_time > ? ORDER BY start_time", (username, 1-is_running, time)).fetchone()
+			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '%:'||?||':%' AND is_running = ? AND end_time > ? ORDER BY start_time", (username, 1-is_running, time)).fetchone()
 			if(not result is None):
 				day = d
 				start_time = result[0]
 		if(start_time != -1):
-			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '% '||?||' %' AND is_running = ? ORDER BY start_time", (username, 1-is_running)).fetchone()
+			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '%:'||?||':%' AND is_running = ? ORDER BY start_time", (username, 1-is_running)).fetchone()
 			if (not result is None):
 				day = d
 				start_time = result[0]
