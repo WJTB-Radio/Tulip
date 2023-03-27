@@ -9,6 +9,7 @@ from pytz import timezone
 import sys
 import os
 import json
+from threading import Timer
 
 if(len(sys.argv) != 2):
 	print("please supply a path to the sqlite3 database as a commandline argument")
@@ -421,6 +422,12 @@ def shows(day):
 			"shows":show_list
 		})
 
+def get_wait_time():
+	now = datetime.now(timezone("US/Eastern"))
+	last_run_time = now.replace(minute=now.minute // 5 * 5, second=0, microsecond=0)
+	next_run_time = last_run_time + timedelta(minutes=5, seconds=1) # give an extra second of leeway
+	return (next_run_time - now).total_seconds()
+
 def update_shows():
 	with open("../show_data/playing.json", "w") as file:
 		file.write(playing())
@@ -428,6 +435,14 @@ def update_shows():
 		with open(f"../show_data/{day}.json", "w") as file:
 			file.write(shows(day))
 	os.system("cd ../show_data/ ; ./push.sh")
+	# run again every 5 minutes
+	# a better solution would be to use the end time of the show, but this works fine
+	# git will detect when nothing changed and act appropriately
+	# and this only runs every 5 mintues which should be fine
+	wait_time = get_wait_time()
+	t = Timer(wait_time, update_shows)
+	t.daemon = True
+	t.start()
 
 update_shows()
 with open("token.secret", encoding='utf-8') as file:
