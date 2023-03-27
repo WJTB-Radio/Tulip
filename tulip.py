@@ -350,7 +350,7 @@ async def set_is_running(context, day, is_running):
 		result = cur.execute(f"SELECT name, start_time, end_time FROM {day} WHERE is_running = ? AND start_time = ?", (1-is_running, start_time))
 		row = result.fetchone()
 		if(not row is None):
-			cur.execute(f"UPDATE {day} SET is_running = ? WHERE is_running = ? AND start_time = ? LIMIT 1", (is_running, 1-is_running, start_time))
+			cur.execute(f"UPDATE {day} SET is_running = ? WHERE is_running = ? AND start_time = ?", (is_running, 1-is_running, start_time))
 			show_name = row[0]
 			time = row[1]
 			end_time = row[2]
