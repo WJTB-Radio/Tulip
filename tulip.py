@@ -371,11 +371,6 @@ async def set_is_running(context, day, is_running):
 async def on_ready():
 	await tree.sync(guild=discord.Object(id=GUILD_ID))
 
-update_shows()
-with open("token.secret", encoding='utf-8') as file:
-	token = file.read()
-	client.run(token)
-
 nothing_playing_error = json.dumps({"name":"", "error":"no-show", "end_time":60*60*24})
 def playing():
 	dt = datetime.now(timezone("US/Eastern"))
@@ -433,4 +428,10 @@ def update_shows():
 		with open(f"../show_data/{day}.json", "w") as file:
 			file.write(shows(day))
 	os.system("../show_data/push.sh")
+
+
+update_shows()
+with open("token.secret", encoding='utf-8') as file:
+	token = file.read()
+	client.run(token)
 
