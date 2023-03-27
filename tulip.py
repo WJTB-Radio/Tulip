@@ -406,13 +406,13 @@ def shows(day):
 	row = result.fetchone()
 	while(not row is None):
 		show = {
-				"name":result[0],
-				"desc":result[1],
-				"poster":result[2],
-				"poster":result[3],
-				"start_time":result[4],
-				"end_time":result[5],
-				"is_running":result[6],
+				"name":row[0],
+				"desc":row[1],
+				"poster":row[2],
+				"poster":row[3],
+				"start_time":row[4],
+				"end_time":row[5],
+				"is_running":row[6],
 				}
 		show_list.append(show)
 		row = result.fetchone()
