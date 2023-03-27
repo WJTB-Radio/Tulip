@@ -167,7 +167,7 @@ async def addshow(context, name:str, hosts:str, host_discords:str, desc:str, pos
 		else:
 			con = sqlite.connect(DB_PATH)
 			cur = con.cursor()
-			result = cur.execute(f"SELECT name FROM {day} WHERE ( start_time >= ? AND start_time > ? ) OR ( end_time > ? AND end_time <= ? ) OR (start_time = ?)",
+			result = cur.execute(f"SELECT name FROM {day} WHERE ( start_time >= ? AND start_time < ? ) OR ( end_time > ? AND end_time <= ? ) OR (start_time = ?)",
 						(start_time_int, end_time_int, start_time_int, end_time_int, start_time_int)).fetchone()
 			if(result is None):
 				cur.execute(f"INSERT INTO {day} (name, desc, hosts, discord, poster, start_time, end_time, is_running) VALUES(?, ?, ?, ?, ?, ?, ?, 1)",
