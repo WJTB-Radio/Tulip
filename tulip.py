@@ -429,12 +429,12 @@ def get_wait_time():
 	return (next_run_time - now).total_seconds()
 
 def update_shows():
-	with open("../show_data/playing.json", "w") as file:
+	with open("/var/services/homes/admin/show_data/playing.json", "w") as file:
 		file.write(playing())
 	for day in days_of_week:
-		with open(f"../show_data/{day}.json", "w") as file:
+		with open(f"/var/services/homes/admin/show_data/{day}.json", "w") as file:
 			file.write(shows(day))
-	os.system("bash -c \"cd ../show_data/ ; ./push.sh\"")
+	os.system("/var/services/homes/admin/show_data/push.sh")
 	# run again every 5 minutes
 	# a better solution would be to use the end time of the show, but this works fine
 	# git will detect when nothing changed and act appropriately
