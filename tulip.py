@@ -434,7 +434,7 @@ def update_shows():
 	for day in days_of_week:
 		with open(f"../show_data/{day}.json", "w") as file:
 			file.write(shows(day))
-	os.system("cd ../show_data/ ; ./push.sh")
+	os.system("bash -c \"cd ../show_data/ ; ./push.sh\"")
 	# run again every 5 minutes
 	# a better solution would be to use the end time of the show, but this works fine
 	# git will detect when nothing changed and act appropriately
