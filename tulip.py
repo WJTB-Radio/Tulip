@@ -1,4 +1,4 @@
-#!/usr/local/bin/python3
+#!/bin/python3
 
 import discord
 from discord.ext import commands
@@ -7,6 +7,8 @@ import sqlite3 as sqlite
 from datetime import *
 from pytz import timezone
 import sys
+import os
+import json
 
 if(len(sys.argv) != 2):
 	print("please supply a path to the sqlite3 database as a commandline argument")
@@ -170,6 +172,7 @@ async def addshow(context, name:str, hosts:str, host_discords:str, desc:str, pos
 				cur.execute(f"INSERT INTO {day} (name, desc, hosts, discord, poster, start_time, end_time, is_running) VALUES(?, ?, ?, ?, ?, ?, ?, 1)",
 						(name, desc, hosts, host_discords, poster, start_time_int, end_time_int))
 				con.commit()
+				update_shows()
 				message = f"Show {name} has been added"
 			else:
 				message = f"Error: There is already a show named \"{result[0]}\" that overlaps with this timeslot."
@@ -188,6 +191,7 @@ async def removeshow(context, name:str):
 		if(not result is None):
 			cur.execute(f"DELETE FROM {day} WHERE start_time = ?", (result[0], ))
 			con.commit()
+			update_shows()
 			message = f"Show \"{name}\" has been deleted."
 			break
 	con.close()
@@ -259,6 +263,7 @@ async def setshowproperty(context, name:str, property:str, value:str):
 		return
 	cur.execute(f"UPDATE {day} SET {property} = ? WHERE start_time = ?", (value, start_time))
 	con.commit()
+	update_shows()
 	con.close()
 	await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {format_property(property, old_value, w)}\n**after**: {property} = {format_property(property, value, w)}")
 
@@ -358,6 +363,7 @@ async def set_is_running(context, day, is_running):
 			else:
 				message = "Error: You do not have any cancelled shows running during the selected timeframe. (You might have already said you were doing your show)"
 		con.commit()
+		update_shows()
 	con.close()
 	await context.response.send_message(message)
 
@@ -368,3 +374,61 @@ async def on_ready():
 with open("token.secret", encoding='utf-8') as file:
 	token = file.read()
 	client.run(token)
+
+nothing_playing_error = json.dumps({"name":"", "error":"no-show", "end_time":60*60*24})
+def playing():
+	dt = datetime.now(timezone("US/Eastern"))
+	w = dt.weekday()
+	if(w >= 5):
+		# we are on a weekend
+		# nothing is playing rn
+		return nothing_playing_error
+	else:
+		# we are on a weekday
+		# something might be playing right now
+		day = days_of_week[w]
+		time = dt.second+dt.minute*60+dt.hour*60*60
+		con = sqlite.connect(DB_PATH)
+		cur = con.cursor()
+		result = cur.execute(f"SELECT name, end_time FROM {day} WHERE start_time < ? AND end_time > ? AND is_running = 1", (time, time)).fetchone()
+		con.close()
+		if(result is None):
+			return nothing_playing_error
+		else:
+			return json.dumps({
+					"name":result[0],
+					"error":"",
+					"end_time":result[1]
+				})
+
+def shows(day):
+	con = sqlite.connect(DB_PATH)
+	cur = con.cursor()
+	result = cur.execute(f"SELECT name, desc, hosts, poster, start_time, end_time, is_running FROM {day}")
+	show_list = []
+	row = result.fetchone()
+	while(not row is None):
+		show = {
+				"name":result[0],
+				"desc":result[1],
+				"poster":result[2],
+				"poster":result[3],
+				"start_time":result[4],
+				"end_time":result[5],
+				"is_running":result[6],
+				}
+		show_list.append(show)
+		row = result.fetchone()
+	con.close()
+	return json.dumps({
+			"day":day,
+			"shows":show_list
+		})
+
+def update_shows():
+	with open("playing.json", "w") as file:
+		file.write(playing())
+	for day in days_of_week:
+		with open(f"{day}.json", "w") as file:
+			file.write(shows(day))
+	os.system("../show_data/push.sh")
