@@ -427,8 +427,7 @@ def update_shows():
 	for day in days_of_week:
 		with open(f"../show_data/{day}.json", "w") as file:
 			file.write(shows(day))
-	os.system("../show_data/push.sh")
-
+	os.system("cd ../show_data/ ; ./push.sh")
 
 update_shows()
 with open("token.secret", encoding='utf-8') as file:
