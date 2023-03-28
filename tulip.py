@@ -408,7 +408,7 @@ def shows(day):
 		show = {
 				"name":row[0],
 				"desc":row[1],
-				"poster":row[2],
+				"hosts":row[2],
 				"poster":row[3],
 				"start_time":row[4],
 				"end_time":row[5],
