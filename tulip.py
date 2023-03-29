@@ -431,23 +431,34 @@ def get_wait_time():
 	return (next_run_time - now).total_seconds()
 
 async def update_shows():
-	with open("/var/services/homes/admin/show_data/playing.json", "w") as file:
-		file.write(playing())
-	for day in days_of_week:
-		with open(f"/var/services/homes/admin/show_data/{day}.json", "w") as file:
-			file.write(shows(day))
-	await asyncio.sleep(5) # give files time to update?
-	os.system("/var/services/homes/admin/show_data/push.sh")
-	# run again every 5 minutes
-	# a better solution would be to use the end time of the show, but this works fine
-	# git will detect when nothing changed and act appropriately
-	# and this only runs every 5 mintues which should be fine
-	wait_time = get_wait_time()
-	t = Timer(wait_time, update_shows)
-	t.daemon = True
-	t.start()
+	while True:
+		with open("/var/services/homes/admin/show_data/playing.json", "w") as file:
+			file.write(playing())
+		for day in days_of_week:
+			with open(f"/var/services/homes/admin/show_data/{day}.json", "w") as file:
+				file.write(shows(day))
+		await asyncio.sleep(5) # give files time to update?
+		os.system("/var/services/homes/admin/show_data/push.sh")
+		# run again every 5 minutes
+		# a better solution would be to use the end time of the show, but this works fine
+		# git will detect when nothing changed and act appropriately
+		# and this only runs every 5 mintues which should be fine
+		wait_time = get_wait_time()
+		await asyncio.sleep(wait_time)
+
+token = ""
+def run_bot():
+	client.run(token)
 
 with open("token.secret", encoding='utf-8') as file:
 	token = file.read()
+	
+	executor = ProcessPoolExecutor(2)
+	loop = asyncio.new_event_loop()
+	a = loop.run_in_executor(executor, run_bot)
+	b = loop.run_in_executor(executor, update_shows)
+	
+	loop.run_forever()
+	
 	client.run(token)
 
