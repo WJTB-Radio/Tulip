@@ -10,6 +10,7 @@ import sys
 import os
 import json
 from threading import Timer
+from time import sleep
 
 if(len(sys.argv) != 2):
 	print("please supply a path to the sqlite3 database as a commandline argument")
@@ -425,7 +426,7 @@ def shows(day):
 def get_wait_time():
 	now = datetime.now(timezone("US/Eastern"))
 	last_run_time = now.replace(minute=now.minute // 5 * 5, second=0, microsecond=0)
-	next_run_time = last_run_time + timedelta(minutes=5, seconds=1) # give an extra second of leeway
+	next_run_time = last_run_time + timedelta(minutes=5, seconds=30) # give an extra few seconds of leeway
 	return (next_run_time - now).total_seconds()
 
 def update_shows():
@@ -434,6 +435,7 @@ def update_shows():
 	for day in days_of_week:
 		with open(f"/var/services/homes/admin/show_data/{day}.json", "w") as file:
 			file.write(shows(day))
+	sleep(5) # give files time to update?
 	os.system("/var/services/homes/admin/show_data/push.sh")
 	# run again every 5 minutes
 	# a better solution would be to use the end time of the show, but this works fine
