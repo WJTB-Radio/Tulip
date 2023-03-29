@@ -446,8 +446,12 @@ async def update_shows():
 		wait_time = get_wait_time()
 		await asyncio.sleep(wait_time)
 
+
+async def main(token):
+	await update_shows()
+	await client.run(token)
+
 with open("token.secret", encoding='utf-8') as file:
 	token = file.read()
-	client.loop.create_task(update_shows())
-	client.run(token)
+	asyncio.run(main(token))
 
