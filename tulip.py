@@ -10,7 +10,7 @@ import sys
 import os
 import json
 from threading import Timer
-from time import sleep
+import asyncio
 
 if(len(sys.argv) != 2):
 	print("please supply a path to the sqlite3 database as a commandline argument")
@@ -174,12 +174,12 @@ async def addshow(context, name:str, hosts:str, host_discords:str, desc:str, pos
 				cur.execute(f"INSERT INTO {day} (name, desc, hosts, discord, poster, start_time, end_time, is_running) VALUES(?, ?, ?, ?, ?, ?, ?, 1)",
 						(name, desc, hosts, host_discords, poster, start_time_int, end_time_int))
 				con.commit()
-				update_shows()
 				message = f"Show {name} has been added"
 			else:
 				message = f"Error: There is already a show named \"{result[0]}\" that overlaps with this timeslot."
 			con.close()
 	await context.response.send_message(message)
+	await update_shows()
 
 @tree.command(name="removeshow", description="Remove a show.", guild=discord.Object(id=GUILD_ID))
 async def removeshow(context, name:str):
@@ -193,11 +193,11 @@ async def removeshow(context, name:str):
 		if(not result is None):
 			cur.execute(f"DELETE FROM {day} WHERE start_time = ?", (result[0], ))
 			con.commit()
-			update_shows()
 			message = f"Show \"{name}\" has been deleted."
 			break
 	con.close()
 	await context.response.send_message(message)
+	await update_shows()
 
 def format_property(property, value, day):
 	if(property in ["start_time", "end_time"]):
@@ -265,9 +265,9 @@ async def setshowproperty(context, name:str, property:str, value:str):
 		return
 	cur.execute(f"UPDATE {day} SET {property} = ? WHERE start_time = ?", (value, start_time))
 	con.commit()
-	update_shows()
 	con.close()
 	await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {format_property(property, old_value, w)}\n**after**: {property} = {format_property(property, value, w)}")
+	await update_shows()
 
 @tree.command(name="getshowproperty", description="Get a property of a show.", guild=discord.Object(id=GUILD_ID))
 async def getshowproperty(context, name:str, property:str):
@@ -365,9 +365,9 @@ async def set_is_running(context, day, is_running):
 			else:
 				message = "Error: You do not have any cancelled shows running during the selected timeframe. (You might have already said you were doing your show)"
 		con.commit()
-		update_shows()
 	con.close()
 	await context.response.send_message(message)
+	await update_shows()
 
 @client.event
 async def on_ready():
@@ -391,6 +391,7 @@ def playing():
 		result = cur.execute(f"SELECT name, end_time FROM {day} WHERE start_time < ? AND end_time > ? AND is_running = 1", (time, time)).fetchone()
 		con.close()
 		if(result is None):
+			# TODO: return the correct end_time
 			return nothing_playing_error
 		else:
 			return json.dumps({
@@ -429,13 +430,13 @@ def get_wait_time():
 	next_run_time = last_run_time + timedelta(minutes=5, seconds=30) # give an extra few seconds of leeway
 	return (next_run_time - now).total_seconds()
 
-def update_shows():
+async def update_shows():
 	with open("/var/services/homes/admin/show_data/playing.json", "w") as file:
 		file.write(playing())
 	for day in days_of_week:
 		with open(f"/var/services/homes/admin/show_data/{day}.json", "w") as file:
 			file.write(shows(day))
-	sleep(5) # give files time to update?
+	await asyncio.sleep(5) # give files time to update?
 	os.system("/var/services/homes/admin/show_data/push.sh")
 	# run again every 5 minutes
 	# a better solution would be to use the end time of the show, but this works fine
@@ -446,7 +447,6 @@ def update_shows():
 	t.daemon = True
 	t.start()
 
-update_shows()
 with open("token.secret", encoding='utf-8') as file:
 	token = file.read()
 	client.run(token)
