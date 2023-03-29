@@ -11,7 +11,6 @@ import os
 import json
 from threading import Timer
 import asyncio
-from concurrent.futures import ProcessPoolExecutor
 
 if(len(sys.argv) != 2):
 	print("please supply a path to the sqlite3 database as a commandline argument")
@@ -447,19 +446,8 @@ async def update_shows():
 		wait_time = get_wait_time()
 		await asyncio.sleep(wait_time)
 
-token = ""
-def run_bot():
-	client.run(token)
-
 with open("token.secret", encoding='utf-8') as file:
 	token = file.read()
-	
-	executor = ProcessPoolExecutor(2)
-	loop = asyncio.new_event_loop()
-	a = loop.run_in_executor(executor, run_bot)
-	b = loop.run_in_executor(executor, update_shows)
-	
-	loop.run_forever()
-	
+	client.loop.create_task(update_shows())
 	client.run(token)
 
