@@ -179,7 +179,6 @@ async def addshow(context, name:str, hosts:str, host_discords:str, desc:str, pos
 				message = f"Error: There is already a show named \"{result[0]}\" that overlaps with this timeslot."
 			con.close()
 	await context.response.send_message(message)
-	await update_shows()
 
 @tree.command(name="removeshow", description="Remove a show.", guild=discord.Object(id=GUILD_ID))
 async def removeshow(context, name:str):
@@ -197,7 +196,6 @@ async def removeshow(context, name:str):
 			break
 	con.close()
 	await context.response.send_message(message)
-	await update_shows()
 
 def format_property(property, value, day):
 	if(property in ["start_time", "end_time"]):
@@ -267,7 +265,6 @@ async def setshowproperty(context, name:str, property:str, value:str):
 	con.commit()
 	con.close()
 	await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {format_property(property, old_value, w)}\n**after**: {property} = {format_property(property, value, w)}")
-	await update_shows()
 
 @tree.command(name="getshowproperty", description="Get a property of a show.", guild=discord.Object(id=GUILD_ID))
 async def getshowproperty(context, name:str, property:str):
@@ -367,7 +364,6 @@ async def set_is_running(context, day, is_running):
 		con.commit()
 	con.close()
 	await context.response.send_message(message)
-	await update_shows()
 
 @client.event
 async def on_ready():
@@ -454,7 +450,6 @@ async def update_shows():
 		# and this only runs every 5 mintues which should be fine
 		wait_time = get_wait_time()
 		await asyncio.sleep(wait_time)
-
 
 async def main(token):
 	await update_shows()
