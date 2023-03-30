@@ -386,8 +386,7 @@ def playing():
 		cur = con.cursor()
 		result = cur.execute(f"SELECT name, end_time FROM {day} WHERE start_time < ? AND end_time > ? AND is_running = 1", (time, time)).fetchone()
 		if(result is None):
-			# TODO: return the correct end_time
-			result = cur.execute(f"SELECT start_time, name FROM {day} WHERE start_time > ? ORDER BY start_time").fetchone()
+			result = cur.execute(f"SELECT start_time, name FROM {day} WHERE start_time > ? ORDER BY start_time", (time, )).fetchone()
 			con.close()
 			if(result is None):
 				return nothing_playing_error
