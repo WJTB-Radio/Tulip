@@ -389,15 +389,24 @@ def playing():
 		con = sqlite.connect(DB_PATH)
 		cur = con.cursor()
 		result = cur.execute(f"SELECT name, end_time FROM {day} WHERE start_time < ? AND end_time > ? AND is_running = 1", (time, time)).fetchone()
-		con.close()
 		if(result is None):
 			# TODO: return the correct end_time
-			return nothing_playing_error
+			result = cur.execute(f"SELECT start_time, name FROM {day} WHERE start_time > ? ORDER BY start_time").fetchone()
+			con.close()
+			if(result is None):
+				return nothing_playing_error
+			else:
+				return json.dumps({
+						"name":result[1],
+						"error":"no-show",
+						"end_time":result[0],
+					})
 		else:
+			con.close()
 			return json.dumps({
 					"name":result[0],
 					"error":"",
-					"end_time":result[1]
+					"end_time":result[1],
 				})
 
 def shows(day):
