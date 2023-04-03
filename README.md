@@ -44,7 +44,7 @@ Human readable list of hosts.
 
 #### host discords
 
-All of the discords of the hosts. If there are multiple, seperate them by one space.
+All of the discords of the hosts. If there are multiple, seperate them by one `:`.
 
 Discords should be in this format: NameOfPerson#1234
 
@@ -126,6 +126,6 @@ The new value of the property.
 
 This will accept 12 hour or 24 hour time for properties that accept a time.
 
-For `discord`, seperate each discord handle with a space.
+For `discord`, seperate each discord handle with a `:`.
 
 `is_running` accepts `true` or `false`.
