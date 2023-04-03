@@ -56,7 +56,7 @@ Human readable description of the show.
 
 #### poster
 
-Path to poster on website.
+Path to a poster on a website.
 
 #### day
 
