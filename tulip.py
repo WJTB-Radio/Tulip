@@ -46,7 +46,7 @@ def get_timestamp(time_seconds, w, end_time_seconds=None):
 	if(w == cur_w and cur_time_seconds > end_time_seconds):
 		w += 7
 	cur_date = cur_dt.date()
-	d = cur_date + timedelta(days=w-cur_w)
+	d = cur_date + timedelta(days=(w-cur_w))
 	t = time(hour=int(time_seconds/(60*60)), minute=int((time_seconds/60)%60))
 	dt = datetime.combine(d, t)
 	timestamp = dt.timestamp()
@@ -353,9 +353,9 @@ async def set_is_running(context, day, is_running):
 			time = row[1]
 			end_time = row[2]
 			if(is_running == 0):
-				message = f"{context.user.display_name}'s show \"{show_name}\" <t:{get_timestamp(time, w, end_time)}:R> has been cancelled."
+				message = f"{context.user.display_name}'s show \"{show_name}\" has been cancelled.\nIt may take a few minutes to update on the site.\nMake sure to use ```/doingmyshow``` next week to uncancel your show."
 			else:
-				message = f"{context.user.display_name}'s show \"{show_name}\" <t:{get_timestamp(time, w, end_time)}:R> will happen."
+				message = f"{context.user.display_name}'s show \"{show_name}\" has been uncancelled.\nIt may take a few minutes to update on the site."
 		else:
 			if(is_running == 0):
 				message = "Error: You do not have any shows running the selected timeframe. (You might have already cancelled your show)"
