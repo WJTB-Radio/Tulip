@@ -180,6 +180,9 @@ async def addshow(context, name:str, hosts:str, host_discords:str, desc:str, pos
 				message = f"Error: There is already a show named \"{result[0]}\" that overlaps with this timeslot."
 			con.close()
 	await context.response.send_message(message)
+	update_shows()
+	await asyncio.sleep(5)
+	push_shows()
 
 @tree.command(name="removeshow", description="Remove a show.", guild=discord.Object(id=GUILD_ID))
 async def removeshow(context, name:str):
@@ -197,6 +200,9 @@ async def removeshow(context, name:str):
 			break
 	con.close()
 	await context.response.send_message(message)
+	update_shows()
+	await asyncio.sleep(5)
+	push_shows()
 
 def format_property(property, value, day):
 	if(property in ["start_time", "end_time"]):
@@ -266,6 +272,9 @@ async def setshowproperty(context, name:str, property:str, value:str):
 	con.commit()
 	con.close()
 	await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {format_property(property, old_value, w)}\n**after**: {property} = {format_property(property, value, w)}")
+	update_shows()
+	await asyncio.sleep(5)
+	push_shows()
 
 @tree.command(name="getshowproperty", description="Get a property of a show.", guild=discord.Object(id=GUILD_ID))
 async def getshowproperty(context, name:str, property:str):
@@ -365,6 +374,9 @@ async def set_is_running(context, day, is_running):
 		con.commit()
 	con.close()
 	await context.response.send_message(message)
+	update_shows()
+	await asyncio.sleep(5)
+	push_shows()
 
 @client.event
 async def on_ready():
@@ -435,15 +447,22 @@ def get_wait_time():
 	next_run_time = last_run_time + timedelta(minutes=5, seconds=30) # give an extra few seconds of leeway
 	return (next_run_time - now).total_seconds()
 
-async def update_shows():
+def update_shows():
+	with open(f"{show_data_path}/playing.json", "w") as file:
+		file.write(playing())
+	for day in days_of_week:
+		with open(f"{show_data_path}/{day}.json", "w") as file:
+			file.write(shows(day))
+
+def push_shows():
+	os.system(f"{show_data_path}/push.sh")	
+
+async def update_loop():
 	while True:
-		with open(f"{show_data_path}/playing.json", "w") as file:
-			file.write(playing())
-		for day in days_of_week:
-			with open(f"{show_data_path}/{day}.json", "w") as file:
-				file.write(shows(day))
-		await asyncio.sleep(5) # give files time to update?
-		os.system(f"{show_data_path}/push.sh")
+		update_shows()
+		# give files time to update
+		await asyncio.sleep(5)
+		push_shows()
 		# run again every 5 minutes
 		# a better solution would be to use the end time of the show, but this works fine
 		# git will detect when nothing changed and act appropriately
@@ -451,11 +470,11 @@ async def update_shows():
 		wait_time = get_wait_time()
 		await asyncio.sleep(wait_time)
 
-async def main(token):
-	await update_shows()
-	await client.run(token)
+@client.event
+async def on_ready():
+	client.loop.create_task(update_loop())
 
 with open("token.secret", encoding='utf-8') as file:
 	token = file.read()
-	asyncio.run(main(token))
+	client.run(token)
 
