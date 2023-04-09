@@ -12,10 +12,11 @@ import json
 from threading import Timer
 import asyncio
 
-if(len(sys.argv) != 2):
-	print("please supply a path to the sqlite3 database as a commandline argument")
+if(len(sys.argv) != 3):
+	print("please supply a path to the sqlite3 database and a path to the showdata repository as commandline arguments")
 	sys.exit()
 
+show_data_path = sys.argv[2]
 DB_PATH = sys.argv[1]
 GUILD_ID = 172047876384358400
 
@@ -436,13 +437,13 @@ def get_wait_time():
 
 async def update_shows():
 	while True:
-		with open("/var/services/homes/admin/show_data/playing.json", "w") as file:
+		with open(f"{show_data_path}/playing.json", "w") as file:
 			file.write(playing())
 		for day in days_of_week:
-			with open(f"/var/services/homes/admin/show_data/{day}.json", "w") as file:
+			with open(f"{show_data_path}/{day}.json", "w") as file:
 				file.write(shows(day))
 		await asyncio.sleep(5) # give files time to update?
-		os.system("/var/services/homes/admin/show_data/push.sh")
+		os.system(f"{show_data_path}/push.sh")
 		# run again every 5 minutes
 		# a better solution would be to use the end time of the show, but this works fine
 		# git will detect when nothing changed and act appropriately
