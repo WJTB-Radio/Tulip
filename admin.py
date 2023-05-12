@@ -47,7 +47,7 @@ def add_commands(tree):
 		await context.response.send_message(message)
 		output.update_shows()
 		await asyncio.sleep(5)
-		push_shows()
+		output.push_shows()
 
 	@tree.command(name="removeshow", description="Remove a show.", guild=discord.Object(id=util.GUILD_ID))
 	async def removeshow(context, name:str):
@@ -65,9 +65,9 @@ def add_commands(tree):
 				break
 		con.close()
 		await context.response.send_message(message)
-		update_shows()
+		output.update_shows()
 		await asyncio.sleep(5)
-		push_shows()
+		output.push_shows()
 
 	@tree.command(name="setshowproperty", description="Edit a property of a show.", guild=discord.Object(id=util.GUILD_ID))
 	async def setshowproperty(context, name:str, property:str, value:str):
@@ -129,9 +129,9 @@ def add_commands(tree):
 		con.commit()
 		con.close()
 		await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {util.format_property(property, old_value, w)}\n**after**: {property} = {util.format_property(property, value, w)}")
-		update_shows()
+		output.update_shows()
 		await asyncio.sleep(5)
-		push_shows()
+		output.push_shows()
 
 	@tree.command(name="getshowproperty", description="Get a property of a show.", guild=discord.Object(id=util.GUILD_ID))
 	async def getshowproperty(context, name:str, property:str):
