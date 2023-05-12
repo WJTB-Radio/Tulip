@@ -1,19 +1,31 @@
-from util import *
+import discord
+from datetime import *
+from pytz import timezone
+from discord.ext import commands
+import sqlite3 as sqlite
+from discord import app_commands
+import sys
+import os
+from threading import Timer
+import asyncio
+
+import util
+import output
 
 # DJ commands go in this file
 def add_commands(tree):
-	@tree.command(name="notdoingmyshow", description="Run this command to announce that you aren't doing your show this week.", guild=discord.Object(id=GUILD_ID))
+	@tree.command(name="notdoingmyshow", description="Run this command to announce that you aren't doing your show this week.", guild=discord.Object(id=util.GUILD_ID))
 	async def notdoingmyshow(context, day:str=""):
 		await set_is_running(context, day, 0)
 	
-	@tree.command(name="doingmyshow", description="Run this command to announce that you are doing your show this week.", guild=discord.Object(id=GUILD_ID))
+	@tree.command(name="doingmyshow", description="Run this command to announce that you are doing your show this week.", guild=discord.Object(id=util.GUILD_ID))
 	async def doingmyshow(context, day:str=""):
 		await set_is_running(context, day, 1)
 
 async def set_is_running(context, day, is_running):
 	day = day.lower()
 	username = (context.user.name+"#"+context.user.discriminator)
-	con = sqlite.connect(DB_PATH)
+	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
 	dt = datetime.now(timezone("US/Eastern"))
 	w = dt.weekday()
@@ -25,8 +37,8 @@ async def set_is_running(context, day, is_running):
 	
 	start_time = -1
 	if(day == ""):
-		for i in range(w, len(days_of_week)+w):
-			d = days_of_week[i%len(days_of_week)]
+		for i in range(w, len(util.days_of_week)+w):
+			d = util.days_of_week[i%len(util.days_of_week)]
 			if(i == w and not weekend):
 				# this is the current day
 				result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '%:'||?||':%' AND is_running = ? AND end_time > ?", (username, 1-is_running, time)).fetchone()
@@ -40,7 +52,7 @@ async def set_is_running(context, day, is_running):
 				start_time = result[0]
 				break
 	else:
-		i = days_of_week.index(day)
+		i = util.days_of_week.index(day)
 		if(i == w and not weekend):
 			# this is the current day
 			result = cur.execute(f"SELECT start_time FROM {d} WHERE discord LIKE '%:'||?||':%' AND is_running = ? AND end_time > ? ORDER BY start_time", (username, 1-is_running, time)).fetchone()
@@ -58,7 +70,7 @@ async def set_is_running(context, day, is_running):
 			message = "Error: You do not have any shows running this week. (You might have already cancelled your show)"
 		else:
 			message = "Error: You do not have any cancelled shows running this week. (You might have already said you were doing your show)"
-	elif(not day in days_of_week):
+	elif(not day in util.days_of_week):
 		message = "Error: Invalid day of the week."
 	else:
 		result = cur.execute(f"SELECT name, start_time, end_time FROM {day} WHERE is_running = ? AND start_time = ?", (1-is_running, start_time))
@@ -80,7 +92,7 @@ async def set_is_running(context, day, is_running):
 		con.commit()
 	con.close()
 	await context.response.send_message(message)
-	update_shows()
+	output.update_shows()
 	await asyncio.sleep(5)
-	push_shows()
+	output.push_shows()
 
