@@ -39,6 +39,7 @@ past_events.add_commands(tree)
 @client.event
 async def on_ready():
 	client.loop.create_task(output.update_loop())
+	await tree.sync(guild=discord.Object(id=util.GUILD_ID))
 
 with open("token.secret", encoding='utf-8') as file:
 	token = file.read()
