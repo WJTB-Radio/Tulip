@@ -39,7 +39,7 @@ def add_commands(tree):
 		message = ""
 		con = sqlite.connect(util.DB_PATH)
 		cur = con.cursor()
-		result = cur.execute("SELECT FROM past_events WHERE name = ?", (name,)).fetchone()
+		result = cur.execute("SELECT * FROM past_events WHERE name = ?", (name,)).fetchone()
 		if(result is None):
 			message = f"Error: No past event called \"{name}\" found."
 		else:
