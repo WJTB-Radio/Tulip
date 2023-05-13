@@ -72,28 +72,47 @@ def shows(day):
 			"shows":show_list
 		})
 
+def past_events():
+	con = sqlite.connect(util.DB_PATH)
+	cur = con.cursor()
+	result = cur.execute(f"SELECT name, desc, date, images FROM past_events")
+	events = []
+	row = result.fetchone()
+	while(not row is None):
+		event = {
+				"name":row[0],
+				"desc":row[1],
+				"date":row[2],
+				"images":row[3],
+				}
+		events.append(event)
+		row = result.fetchone()
+	return json.dumps(events)
+
 def get_wait_time():
 	now = datetime.now(timezone("US/Eastern"))
 	last_run_time = now.replace(minute=now.minute // 5 * 5, second=0, microsecond=0)
 	next_run_time = last_run_time + timedelta(minutes=5, seconds=30) # give an extra few seconds of leeway
 	return (next_run_time - now).total_seconds()
 
-def update_shows():
+def update():
 	with open(f"{util.show_data_path}/playing.json", "w") as file:
 		file.write(playing())
 	for day in util.days_of_week:
 		with open(f"{util.show_data_path}/{day}.json", "w") as file:
 			file.write(shows(day))
+	with open(f"{util.show_data_path}/past_events.json", "w") as file:
+		file.write(past_events())
 
-def push_shows():
+def push():
 	os.system(f"{util.show_data_path}/push.sh")	
 
 async def update_loop():
 	while True:
-		update_shows()
+		update()
 		# give files time to update
 		await asyncio.sleep(5)
-		push_shows()
+		push()
 		# run again every 5 minutes
 		# a better solution would be to use the end time of the show, but this works fine
 		# git will detect when nothing changed and act appropriately

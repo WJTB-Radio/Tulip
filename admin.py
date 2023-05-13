@@ -45,9 +45,9 @@ def add_commands(tree):
 					message = f"Error: There is already a show named \"{result[0]}\" that overlaps with this timeslot."
 				con.close()
 		await context.response.send_message(message)
-		output.update_shows()
+		output.update()
 		await asyncio.sleep(5)
-		output.push_shows()
+		output.push()
 
 	@tree.command(name="removeshow", description="Remove a show.", guild=discord.Object(id=util.GUILD_ID))
 	async def removeshow(context, name:str):
@@ -65,9 +65,9 @@ def add_commands(tree):
 				break
 		con.close()
 		await context.response.send_message(message)
-		output.update_shows()
+		output.update()
 		await asyncio.sleep(5)
-		output.push_shows()
+		output.push()
 
 	@tree.command(name="setshowproperty", description="Edit a property of a show.", guild=discord.Object(id=util.GUILD_ID))
 	async def setshowproperty(context, name:str, property:str, value:str):
@@ -129,9 +129,9 @@ def add_commands(tree):
 		con.commit()
 		con.close()
 		await context.response.send_message(f"Show \"{name}\" updated.\n**before**: {property} = {util.format_property(property, old_value, w)}\n**after**: {property} = {util.format_property(property, value, w)}")
-		output.update_shows()
+		output.update()
 		await asyncio.sleep(5)
-		output.push_shows()
+		output.push()
 
 	@tree.command(name="getshowproperty", description="Get a property of a show.", guild=discord.Object(id=util.GUILD_ID))
 	async def getshowproperty(context, name:str, property:str):

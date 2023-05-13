@@ -92,7 +92,7 @@ async def set_is_running(context, day, is_running):
 		con.commit()
 	con.close()
 	await context.response.send_message(message)
-	output.update_shows()
+	output.update()
 	await asyncio.sleep(5)
-	output.push_shows()
+	output.push()
 
