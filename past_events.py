@@ -20,7 +20,7 @@ def add_commands(tree):
 		con = sqlite.connect(util.DB_PATH)
 		cur = con.cursor()
 		result = cur.execute("SELECT * FROM past_events WHERE name = ?", (name,)).fetchone()
-		if(result is None):
+		if(not result is None):
 			await context.response.send_message(f"Error: There is already a past event named {name}")
 			con.close()
 			return
