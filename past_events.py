@@ -19,6 +19,11 @@ def add_commands(tree):
 			return
 		con = sqlite.connect(util.DB_PATH)
 		cur = con.cursor()
+		result = cur.execute("SELECT * FROM past_events WHERE name = ?", (name,)).fetchone()
+		if(result is None):
+			await context.response.send_message(f"Error: There is already a past event named {name}")
+			con.close()
+			return
 		cur.execute("INSERT INTO past_events(name, desc, date, images) VALUES(?, ?, ?, ?)", (name, desc, date, images))
 		con.commit()
 		con.close()
