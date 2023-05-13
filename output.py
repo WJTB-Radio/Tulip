@@ -87,7 +87,9 @@ def past_events():
 				}
 		events.append(event)
 		row = result.fetchone()
-	return json.dumps(events)
+	return json.dumps({
+			"events":events,
+			})
 
 def get_wait_time():
 	now = datetime.now(timezone("US/Eastern"))
