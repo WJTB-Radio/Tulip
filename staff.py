@@ -24,7 +24,7 @@ def add_commands(tree):
 			await context.response.send_message(f"Error: There is already a staff member named \"{name}\"")
 			con.close()
 			return
-		cur.execute("INSERT INTO staff(name, flavor, position, image, seder) VALUES(?, ?, ?, ?)", (name, flavor, position, image, seder))
+		cur.execute("INSERT INTO staff(name, flavor, position, image, seder) VALUES(?, ?, ?, ?, ?)", (name, flavor, position, image, seder))
 		con.commit()
 		con.close()
 		await context.response.send_message(f"{name} has been added to the staff page.\nIt may take a few minutes to update on the website.")
