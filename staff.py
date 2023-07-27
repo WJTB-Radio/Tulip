@@ -14,7 +14,7 @@ import output
 
 def add_commands(tree):
 	@tree.command(name="addstaff", description="Remove a staff member.", guild=discord.Object(id=util.GUILD_ID))
-	async def addstaff(context, name:str, flavor:str, position:str, image:str, order:int):
+	async def addstaff(context, name:str, flavor:str, position:str, image:str, seder:int):
 		if(not await util.check_admin(context)):
 			return
 		con = sqlite.connect(util.DB_PATH)
@@ -24,7 +24,7 @@ def add_commands(tree):
 			await context.response.send_message(f"Error: There is already a staff member named \"{name}\"")
 			con.close()
 			return
-		cur.execute("INSERT INTO staff(name, flavor, position, image, order) VALUES(?, ?, ?, ?)", (name, flavor, position, image, order))
+		cur.execute("INSERT INTO staff(name, flavor, position, image, seder) VALUES(?, ?, ?, ?)", (name, flavor, position, image, seder))
 		con.commit()
 		con.close()
 		await context.response.send_message(f"{name} has been added to the staff page.\nIt may take a few minutes to update on the website.")
@@ -56,7 +56,7 @@ def add_commands(tree):
 	async def editpastevent(context, name:str, property:str, value:str):
 		if(not await util.check_admin(context)):
 			return
-		properties = ["name", "flavor", "position", "image", "order"]
+		properties = ["name", "flavor", "position", "image", "seder"]
 		if(not property in properties):
 			await context.response.send_message(f"\"{property}\" is not a valid property.\nThe valid properties are ```{properties}```")
 			return
@@ -67,7 +67,7 @@ def add_commands(tree):
 			await context.response.send_message(f"Error: No staff member named \"{name}\" found.")
 			con.close()
 			return
-		if(property == "order"):
+		if(property == "seder"):
 			try:
 				value = int(value)
 			except ValueError:
