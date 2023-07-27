@@ -52,7 +52,7 @@ def add_commands(tree):
 		await asyncio.sleep(5)
 		output.push()
 	
-	@tree.command(name="editpastevent", description="Add a past event.", guild=discord.Object(id=util.GUILD_ID))
+	@tree.command(name="editpastevent", description="Edit a past event.", guild=discord.Object(id=util.GUILD_ID))
 	async def editpastevent(context, name:str, property:str, value:str):
 		if(not await util.check_admin(context)):
 			return

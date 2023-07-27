@@ -91,6 +91,25 @@ def past_events():
 			"events":events,
 			})
 
+def staff():
+	con = sqlite.connect(util.DB_PATH)
+	cur = con.cursor()
+	result = cur.execute(f"SELECT name, flavor, position FROM staff ORDER BY order")
+	staff = []
+	row = result.fetchone()
+	while(not row is None):
+		s = {
+				"name":row[0],
+				"desc":row[1],
+				"date":row[2],
+				"images":row[3],
+				}
+		staff.append(s)
+		row = result.fetchone()
+	return json.dumps({
+			"staff":staff,
+			})
+
 def get_wait_time():
 	now = datetime.now(timezone("US/Eastern"))
 	last_run_time = now.replace(minute=now.minute // 5 * 5, second=0, microsecond=0)
@@ -105,6 +124,8 @@ def update():
 			file.write(shows(day))
 	with open(f"{util.show_data_path}/past_events.json", "w") as file:
 		file.write(past_events())
+	with open(f"{util.show_data_path}/staff.json", "w") as file:
+		file.write(staff())
 
 def push():
 	os.system(f"{util.show_data_path}/push.sh")	
