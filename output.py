@@ -94,15 +94,15 @@ def past_events():
 def staff():
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
-	result = cur.execute(f"SELECT name, flavor, position FROM staff ORDER BY order")
+	result = cur.execute(f"SELECT name, flavor, position, image FROM staff ORDER BY order")
 	staff = []
 	row = result.fetchone()
 	while(not row is None):
 		s = {
 				"name":row[0],
-				"desc":row[1],
-				"date":row[2],
-				"images":row[3],
+				"flavor":row[1],
+				"position":row[2],
+				"image":row[3],
 				}
 		staff.append(s)
 		row = result.fetchone()
