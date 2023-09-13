@@ -18,7 +18,7 @@ def add_module(client):
 	async def on_raw_reaction_add(payload):
 		emoji = payload.emoji.name
 		user = payload.member
-		channel = await client.get_channel(payload.channel_id)
+		channel = client.get_channel(payload.channel_id)
 		message = await channel.fetch_message(payload.message_id)
 		print("got reaction")
 		if(not is_admin(user)):
