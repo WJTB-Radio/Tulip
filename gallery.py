@@ -16,35 +16,46 @@ def add_module(client):
 	@client.event
 	async def on_reaction_add(reaction, user):
 		if(not is_admin(user)):
+			print("reaction by non admin")
 			return
 		if(isinstance(reaction.message.channel, discord.TextChannel)):
 			if(not check_channel(reaction.message.channel)):
 				# dont care about other channels
+				print("wrong channel")
 				return
 		else:
 			# only care about normal text channels
+			print("not a normal text channel")
 			return
 		if(not type(reaction.emoji) is str):
 			# we dont care about custom emojis
+			print("custom emoji")
 			return
 		if(reaction.emoji == '✅'):
+			print("check reaction")
 			add_message_to_gallery(reaction.message, reaction.message.created_at, '')
 		elif(reaction.emoji == '❌'):
+			print("x reaction")
 			remove_message_from_gallery(reaction.message)
 
 	@client.event
 	async def on_message(message):
 		if(not is_admin(message.author)):
+			print("not admin")
 			return
 		if(message.reference is None):
 			# this isnt a reply
+			print("non reply")
 			return
 		channel = message.channel
 		if(not check_channel(channel)):
+			print("wrong channel")
 			return
 		if(not message.content.startswith('✅')):
+			print("not a check")
 			return
 		image_message = await channel.fetch_message(message.reference.message_id)
+		print("got image message")
 		m = re.search('(?i)date: *(.*)\\n', message.content)
 		date = image_message.created_at
 		if(not m is None):
@@ -58,14 +69,17 @@ def add_module(client):
 		caption = ''
 		if(not m is None):
 			caption = m.group(1)
+		print("adding message to gallery")
 		add_message_to_gallery(image_message, date, caption)
 
 def add_message_to_gallery(message, timestamp, caption):
 	attachments = message.attachments
 	for attachment in attachments:
+		print("attachment")
 		if(not attachment.content_type.startswith('image')):
 			# dont care about attachements that arent images
 			continue
+		print("image attachment")
 		url = str(attachment)
 		add_image_to_gallery(url, timestamp, caption)
 
