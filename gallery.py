@@ -8,6 +8,7 @@ import sys
 import os
 from threading import Timer
 import asyncio
+import re
 
 import util
 import output
