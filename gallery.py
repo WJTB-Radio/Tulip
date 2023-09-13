@@ -20,51 +20,36 @@ def add_module(client):
 		user = payload.member
 		channel = client.get_channel(payload.channel_id)
 		message = await channel.fetch_message(payload.message_id)
-		print("got reaction")
 		if(not is_admin(user)):
-			print("reaction by non admin")
 			return
 		if(isinstance(channel, discord.TextChannel)):
 			if(not check_channel(channel)):
 				# dont care about other channels
-				print("wrong channel")
 				return
 		else:
 			# only care about normal text channels
-			print("not a normal text channel")
 			return
 		if(not type(emoji) is str):
 			# we dont care about custom emojis
-			print("custom emoji")
 			return
 		if(emoji == '✅'):
-			print("check reaction")
 			add_message_to_gallery(message, message.created_at, '')
 		elif(emoji == '❌'):
-			print("x reaction")
 			remove_message_from_gallery(message)
-		else:
-			print("other emoji:")
-			print(emoji)
 
 	@client.event
 	async def on_message(message):
 		if(not is_admin(message.author)):
-			print("not admin")
 			return
 		if(message.reference is None):
 			# this isnt a reply
-			print("non reply")
 			return
 		channel = message.channel
 		if(not check_channel(channel)):
-			print("wrong channel")
 			return
 		if(not message.content.startswith('✅')):
-			print("not a check")
 			return
 		image_message = await channel.fetch_message(message.reference.message_id)
-		print("got image message")
 		m = re.search('(?i)date: *(.*)\\n', message.content)
 		date = image_message.created_at
 		if(not m is None):
@@ -78,7 +63,6 @@ def add_module(client):
 		caption = ''
 		if(not m is None):
 			caption = m.group(1)
-		print("adding message to gallery")
 		add_message_to_gallery(image_message, date, caption)
 
 def add_message_to_gallery(message, timestamp, caption):
@@ -109,7 +93,7 @@ def add_image_to_gallery(url, timestamp, caption):
 		# this image is already in the gallery
 		con.close()
 		return
-	result = cur.execute("INSERT INTO gallery(image, date_taken, caption)", (url, timestamp, caption)).fetchone()
+	result = cur.execute("INSERT INTO gallery(image, date_taken, caption) VALUES(?, ?, ?)", (url, timestamp, caption)).fetchone()
 	con.commit()
 	con.close()
 	output.update()
