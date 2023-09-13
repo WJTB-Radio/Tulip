@@ -18,6 +18,7 @@ import admin
 import everyone
 import past_events
 import staff
+import gallery
 
 if(len(sys.argv) != 3):
 	print("please supply a path to the sqlite3 database and a path to the showdata repository as commandline arguments")
@@ -28,6 +29,7 @@ util.DB_PATH = sys.argv[1]
 
 intents = discord.Intents.default()
 intents.message_content = True
+intents.reactions = True
 
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
@@ -37,6 +39,8 @@ djs.add_commands(tree)
 admin.add_commands(tree)
 past_events.add_commands(tree)
 staff.add_commands(tree)
+
+gallery.add_module(client)
 
 @client.event
 async def on_ready():
