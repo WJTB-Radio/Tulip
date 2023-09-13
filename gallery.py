@@ -116,7 +116,7 @@ def check_channel(channel):
 	return reaction.message.channel.name in ['gallery', 'pics-and-vids', 'botchat']
 
 def is_admin(user):
-	if(not instanceof(user, discord.Member)):
+	if(not isinstance(user, discord.Member)):
 		return False
 	for role in user.roles:
 		if(role.name == "tulip-admin"):
