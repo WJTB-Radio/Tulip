@@ -119,7 +119,7 @@ def gallery():
 	while(not row is None):
 		p = {
 				"image":row[0],
-				"date_taken":row[1].strftime('%A, %B %d %Y'),
+				"date_taken":date.fromisoformat(row[1]).strftime('%A, %B %d %Y'),
 				"caption":row[2],
 				}
 		photos.append(p)
