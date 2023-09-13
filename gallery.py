@@ -113,7 +113,7 @@ def remove_image_from_gallery(url):
 	output.update()
 
 def check_channel(channel):
-	return reaction.message.channel.name in ['gallery', 'pics-and-vids', 'botchat']
+	return channel.name in ['gallery', 'pics-and-vids', 'botchat']
 
 def is_admin(user):
 	if(not isinstance(user, discord.Member)):
