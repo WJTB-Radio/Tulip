@@ -110,6 +110,24 @@ def staff():
 			"staff":staff,
 			})
 
+def gallery():
+	con = sqlite.connect(util.DB_PATH)
+	cur = con.cursor()
+	result = cur.execute(f"SELECT image, date_taken, caption FROM gallery ORDER BY date_taken")
+	photos = []
+	row = result.fetchone()
+	while(not row is None):
+		p = {
+				"image":row[0],
+				"date_taken":row[1],
+				"caption":row[2],
+				}
+		photos.append(p)
+		row = result.fetchone()
+	return json.dumps({
+			"photos":photos,
+			})	
+
 def get_wait_time():
 	now = datetime.now(timezone("US/Eastern"))
 	last_run_time = now.replace(minute=now.minute // 5 * 5, second=0, microsecond=0)
@@ -126,6 +144,8 @@ def update():
 		file.write(past_events())
 	with open(f"{util.show_data_path}/staff.json", "w") as file:
 		file.write(staff())
+	with open(f"{util.show_data_path}/gallery.json", "w") as file:
+		file.write(gallery())
 
 def push():
 	os.system(f"{util.show_data_path}/push.sh")	

@@ -68,11 +68,9 @@ def add_module(client):
 def add_message_to_gallery(message, timestamp, caption):
 	attachments = message.attachments
 	for attachment in attachments:
-		print("attachment")
 		if(not attachment.content_type.startswith('image')):
 			# dont care about attachements that arent images
 			continue
-		print("image attachment")
 		url = str(attachment)
 		add_image_to_gallery(url, timestamp, caption)
 
