@@ -16,6 +16,7 @@ import output
 def add_module(client):
 	@client.event
 	async def on_reaction_add(reaction, user):
+		print("got reaction")
 		if(not is_admin(user)):
 			print("reaction by non admin")
 			return
@@ -38,6 +39,9 @@ def add_module(client):
 		elif(reaction.emoji == '❌'):
 			print("x reaction")
 			remove_message_from_gallery(reaction.message)
+		else:
+			print("other emoji:")
+			print(reaction.emoji)
 
 	@client.event
 	async def on_message(message):
