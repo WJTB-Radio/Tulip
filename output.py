@@ -119,14 +119,14 @@ def gallery():
 	while(not row is None):
 		p = {
 				"image":row[0],
-				"date_taken":row[1],
+				"date_taken":row[1].strftime('%A, %B %d %Y'),
 				"caption":row[2],
 				}
 		photos.append(p)
 		row = result.fetchone()
 	return json.dumps({
 			"photos":photos,
-			})	
+			})
 
 def get_wait_time():
 	now = datetime.now(timezone("US/Eastern"))
