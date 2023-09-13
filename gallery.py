@@ -24,7 +24,7 @@ def add_module(client):
 		if(not is_admin(user)):
 			print("reaction by non admin")
 			return
-		if(isinstance(reaction.message.channel, discord.TextChannel)):
+		if(isinstance(channel, discord.TextChannel)):
 			if(not check_channel(channel)):
 				# dont care about other channels
 				print("wrong channel")
