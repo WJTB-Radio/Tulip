@@ -15,13 +15,17 @@ import output
 
 def add_module(client):
 	@client.event
-	async def on_reaction_add(reaction, user):
+	async def on_raw_reaction_add(payload):
+		emoji = payload.emoji.name
+		user = payload.member
+		channel = await client.get_channel(payload.channel_id)
+		message = await channel.fetch_message(payload.message_id)
 		print("got reaction")
 		if(not is_admin(user)):
 			print("reaction by non admin")
 			return
 		if(isinstance(reaction.message.channel, discord.TextChannel)):
-			if(not check_channel(reaction.message.channel)):
+			if(not check_channel(channel)):
 				# dont care about other channels
 				print("wrong channel")
 				return
@@ -29,19 +33,19 @@ def add_module(client):
 			# only care about normal text channels
 			print("not a normal text channel")
 			return
-		if(not type(reaction.emoji) is str):
+		if(not type(emoji) is str):
 			# we dont care about custom emojis
 			print("custom emoji")
 			return
-		if(reaction.emoji == '✅'):
+		if(emoji == '✅'):
 			print("check reaction")
-			add_message_to_gallery(reaction.message, reaction.message.created_at, '')
-		elif(reaction.emoji == '❌'):
+			add_message_to_gallery(message, message.created_at, '')
+		elif(emoji == '❌'):
 			print("x reaction")
-			remove_message_from_gallery(reaction.message)
+			remove_message_from_gallery(message)
 		else:
 			print("other emoji:")
-			print(reaction.emoji)
+			print(emoji)
 
 	@client.event
 	async def on_message(message):
