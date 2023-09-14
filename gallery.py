@@ -100,6 +100,7 @@ def remove_image_from_gallery(url):
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
 	cur.execute("DELETE FROM gallery WHERE image = ?", (url,))
+	con.commit()
 	con.close()
 	output.update()
 
