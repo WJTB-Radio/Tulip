@@ -50,7 +50,7 @@ def add_module(client):
 		if(not message.content.startswith('✅')):
 			return
 		image_message = await channel.fetch_message(message.reference.message_id)
-		m = re.search('(?i)date: *(.*)\\n', message.content)
+		m = re.search('(?i)date: *(.*)[\\n$]', message.content)
 		date = image_message.created_at
 		if(not m is None):
 			datestring = m.group(1)
@@ -59,7 +59,7 @@ def add_module(client):
 			except ValueError:
 				await message.reply(f'Invalid date \'{datestring}\'\n date must be in mm/dd/yyyy format.')
 				return
-		m = re.search('(?i)caption: *(.*)\\n', message.content)
+		m = re.search('(?i)caption: *(.*)[\\n$]', message.content)
 		caption = ''
 		if(not m is None):
 			caption = m.group(1)
