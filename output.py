@@ -117,9 +117,15 @@ def gallery():
 	photos = []
 	row = result.fetchone()
 	while(not row is None):
+		date_taken = 0
+		try:
+			date_taken = datetime.strptime(row[1], '%Y-%m-%d %H:%M:%S.%f%z').strftime('%A, %B %d %Y')
+		except ValueError:
+			# for some reason sometimes we dont get subsecond info?
+			date_taken = datetime.strptime(row[1], '%Y-%m-%d %H:%M:%S').strftime('%A, %B %d %Y')
 		p = {
 				"image":row[0],
-				"date_taken": datetime.strptime(row[1], '%Y-%m-%d %H:%M:%S.%f%z').strftime('%A, %B %d %Y'),
+				"date_taken": date_taken,
 				"caption":row[2],
 				}
 		photos.append(p)
