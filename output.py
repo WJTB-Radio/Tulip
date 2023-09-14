@@ -113,7 +113,7 @@ def staff():
 def gallery():
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
-	result = cur.execute(f"SELECT image, date_taken, caption FROM gallery ORDER BY date_taken")
+	result = cur.execute(f"SELECT image, date_taken, caption FROM gallery ORDER BY date_taken ASC")
 	photos = []
 	row = result.fetchone()
 	while(not row is None):
