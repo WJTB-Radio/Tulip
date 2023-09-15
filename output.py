@@ -110,10 +110,14 @@ def staff():
 			"staff":staff,
 			})
 
-def gallery():
+def gallery(limit):
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
-	result = cur.execute(f"SELECT image, date_taken, caption FROM gallery ORDER BY date_taken DESC")
+	result = None
+	if(limit is None):
+		result = cur.execute("SELECT image, date_taken, caption FROM gallery ORDER BY date_taken DESC")
+	else:
+		result = cur.execute("SELECT image, date_taken, caption FROM gallery ORDER BY date_taken DESC LIMIT ?", (limit, ))
 	photos = []
 	row = result.fetchone()
 	while(not row is None):
@@ -151,7 +155,9 @@ def update():
 	with open(f"{util.show_data_path}/staff.json", "w") as file:
 		file.write(staff())
 	with open(f"{util.show_data_path}/gallery.json", "w") as file:
-		file.write(gallery())
+		file.write(gallery(None))
+	with open(f"{util.show_data_path}/gallery_top.json", "w") as file:
+		file.write(gallery(3))
 
 def push():
 	os.system(f"{util.show_data_path}/push.sh")	
