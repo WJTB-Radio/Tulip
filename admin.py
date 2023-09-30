@@ -73,8 +73,8 @@ def add_commands(tree):
 	async def setshowproperty(context, name:str, property:str, value:str):
 		if(not await util.check_admin(context)):
 			return
-		if(not property in property_list):
-			await context.response.send_message(f"Error: \"{property}\" is not a valid property.\nThe valid properties are:\n```json\n{property_list}\n```")
+		if(not property in util.property_list):
+			await context.response.send_message(f"Error: \"{property}\" is not a valid property.\nThe valid properties are:\n```json\n{util.property_list}\n```")
 			return
 		if(property == "start_time" or property == "end_time"):
 			parsed_value = util.parse_time(value)
@@ -137,8 +137,8 @@ def add_commands(tree):
 	async def getshowproperty(context, name:str, property:str):
 		if(not await util.check_admin(context)):
 			return
-		if(not property in property_list):
-			await context.response.send_message(f"Error: \"{property}\" is not a valid property.\nThe valid properties are:\n```json\n{property_list}\n```")
+		if(not property in util.property_list):
+			await context.response.send_message(f"Error: \"{property}\" is not a valid property.\nThe valid properties are:\n```json\n{util.property_list}\n```")
 			return
 		con = sqlite.connect(util.DB_PATH)
 		cur = con.cursor()
