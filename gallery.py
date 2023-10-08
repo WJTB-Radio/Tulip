@@ -87,6 +87,8 @@ def remove_message_from_gallery(message):
 
 def add_image_to_gallery(url, timestamp, caption):
 	url = convert_image(url)
+	if(url == ""):
+		return
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
 	result = cur.execute("SELECT * FROM gallery WHERE image = ?", (url,)).fetchone()
@@ -102,6 +104,8 @@ def add_image_to_gallery(url, timestamp, caption):
 def remove_image_from_gallery(url):
 	# we use the hash of the resized image as the filename so this should be fine
 	url = convert_url(url)
+	if(url == ""):
+		return
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
 	cur.execute("DELETE FROM gallery WHERE image = ?", (url,))
@@ -115,7 +119,7 @@ def convert_image(url):
 	url = subprocess_result.stdout.strip()
 	if(url == ""):
 		# something went wrong, aka this image is invalid
-		return
+		return ""
 	url = "https://raw.githubusercontent.com/WJTB-Radio/ShowData/master/images/" + url
 	return url
 
