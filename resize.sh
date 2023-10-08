@@ -34,4 +34,6 @@ fi
 
 mv "${filename}_c.jpg" ./images/${hashed}.jpg
 
+rm *.jpg
+
 echo ${hashed}.jpg
