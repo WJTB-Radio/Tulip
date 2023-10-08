@@ -34,6 +34,6 @@ fi
 
 mv "${filename}_c.jpg" ./images/${hashed}.jpg
 
-rm *.jpg
+rm /var/services/homes/admin/show_data/*.jpg
 
 echo ${hashed}.jpg
