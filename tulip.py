@@ -8,6 +8,7 @@ import sqlite3 as sqlite
 from discord import app_commands
 import sys
 import os
+import subprocess
 from threading import Timer
 import asyncio
 

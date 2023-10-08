@@ -6,6 +6,7 @@ import sqlite3 as sqlite
 from discord import app_commands
 import sys
 import os
+import subprocess
 from threading import Timer
 import asyncio
 import re
@@ -85,6 +86,7 @@ def remove_message_from_gallery(message):
 		remove_image_from_gallery(url)
 
 def add_image_to_gallery(url, timestamp, caption):
+	url = convert_image(url)
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
 	result = cur.execute("SELECT * FROM gallery WHERE image = ?", (url,)).fetchone()
@@ -98,12 +100,24 @@ def add_image_to_gallery(url, timestamp, caption):
 	output.update()
 
 def remove_image_from_gallery(url):
+	# we use the hash of the resized image as the filename so this should be fine
+	url = convert_url(url)
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
 	cur.execute("DELETE FROM gallery WHERE image = ?", (url,))
 	con.commit()
 	con.close()
 	output.update()
+
+def convert_image(url):
+	# discord doesnt work as a cdn anymore so we have to use github instead
+	subprocess_result = subprocess.run(["/var/services/homes/admin/tulip/resize.sh", url], capture_output=True)
+	url = subprocess_result.stdout.strip()
+	if(url == ""):
+		# something went wrong, aka this image is invalid
+		return
+	url = "https://raw.githubusercontent.com/WJTB-Radio/ShowData/master/images/" + url
+	return url
 
 def check_channel(channel):
 	return channel.name in ['website-gallery', 'pics-and-vids', 'botchat']
