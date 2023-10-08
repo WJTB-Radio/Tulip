@@ -116,7 +116,7 @@ def remove_image_from_gallery(url):
 def convert_image(url):
 	# discord doesnt work as a cdn anymore so we have to use github instead
 	subprocess_result = subprocess.run(["/var/services/homes/admin/tulip/resize.sh", url], capture_output=True)
-	url = subprocess_result.stdout.strip()
+	url = subprocess_result.stdout.decode("utf-8").strip()
 	if(url == ""):
 		# something went wrong, aka this image is invalid
 		return ""
