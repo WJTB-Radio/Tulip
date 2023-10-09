@@ -19,7 +19,7 @@ then
 	exit
 fi
 
-magick "${filename}_r.jpg" -resize 750000@ "${filename}_c.jpg"
+convert "${filename}_r.jpg" -resize 750000@ "${filename}_c.jpg"
 
 if [ $? != 0 ]
 then
