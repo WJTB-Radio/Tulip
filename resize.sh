@@ -4,6 +4,7 @@ cd /var/services/homes/admin/show_data
 
 if [ -z "$1" ]
 then
+	>&2 echo "error: invalid parameters"
 	exit
 fi
 
@@ -13,6 +14,8 @@ curl -s $1 -o "${filename}_r.jpg"
 
 if [ $? != 0 ]
 then
+	>&2 echo "error: failed to download image"
+	rm /var/services/homes/admin/show_data/*.jpg
 	exit
 fi
 
@@ -20,6 +23,8 @@ magick "${filename}_r.jpg" -resize 750000@ "${filename}_c.jpg"
 
 if [ $? != 0 ]
 then
+	>&2 echo "error: failed to convert image"
+	rm /var/services/homes/admin/show_data/*.jpg
 	exit
 fi
 
