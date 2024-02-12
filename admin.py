@@ -29,7 +29,7 @@ def add_commands(tree):
 				message = f"Error: {start_time} is not a valid time."
 			elif(end_time_int is None):
 				message = f"Error: {end_time} is not a valid time."
-		elif(start_time_int >= end_time_int):
+			elif(start_time_int >= end_time_int):
 				message = f"Error: end time must be after start time."
 			else:
 				con = sqlite.connect(util.DB_PATH)
