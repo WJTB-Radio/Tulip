@@ -103,4 +103,12 @@ def format_property(property, value, day):
 		return "true" if value == 1 else "false"
 	return value
 
-
+def convert_image(url):
+	# discord doesnt work as a cdn anymore so we have to use github instead
+	subprocess_result = subprocess.run(["/var/services/homes/admin/tulip/resize.sh", url], capture_output=True)
+	url = subprocess_result.stdout.decode("utf-8").strip()
+	if(url == ""):
+		# something went wrong, aka this image is invalid
+		return ""
+	url = "https://raw.githubusercontent.com/WJTB-Radio/ShowData/master/images/" + url
+	return url
