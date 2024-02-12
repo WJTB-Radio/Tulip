@@ -8,7 +8,7 @@ import sys
 import os
 from threading import Timer
 import asyncio
-
+import subprocess
 
 GUILD_ID = 172047876384358400
 property_list = ["name", "desc", "hosts", "poster", "discord", "start_time", "end_time", "is_running"] 
