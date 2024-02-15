@@ -72,6 +72,9 @@ def shows(day):
 			"shows":show_list
 		})
 
+def fix_line_breaks(text):
+	return text.replace("<br/>", "\n")
+
 def past_events():
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
@@ -81,7 +84,7 @@ def past_events():
 	while(not row is None):
 		event = {
 				"name":row[0],
-				"desc":row[1],
+				"desc":fix_line_breaks(row[1]),
 				"date":row[2],
 				"images":row[3],
 				}
