@@ -28,13 +28,11 @@ Example Rejection Usage:
 ❌
 reason: staff availability
 name: Ian Henry Atkins
-email: iha4@njit.edu, anotheremail@njit.edu
 ```
 Example Acceptance Usage:
 ```
 ✅
 name: Ian Henry Atkins
-email: iha4@njit.edu, optional\
 ```
 """
 
