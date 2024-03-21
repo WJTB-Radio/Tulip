@@ -60,7 +60,7 @@ def add_module(client):
 		embed_content = referenced_message.embeds[0].description
 
 		date = None
-		m = re.search('(?i)\*\*What is the date of the event\?\*\*\\\n([0-9]+-[0-9]+-[0-9]+)\\n', embed_content)
+		m = re.search('(?i)\*\*What is the date of the event\?\*\*\\\n([0-9]+-[0-9]+-[0-9]+)\\n', embed_content, flag=re.MULTILINE)
 		if(not m is None):
 			datestring = m.group(1)
 			try:
@@ -72,20 +72,19 @@ def add_module(client):
 			await message.reply('Could not find date in referenced message.')
 			return
 
-		m = re.search('(?i)\*\*What is the name of the event\\?\*\*\\n([0-9]+-[0-9]+-[0-9]+)\\n', embed_content)
+		m = re.search('(?i)\*\*What is the name of the event\\?\*\*\\n([0-9]+-[0-9]+-[0-9]+)\\n', embed_content, flag=re.MULTILINE)
 		if(m is None):
 			await message.reply('Could not find name of event in referenced message.')
 			return
 		event_name = m.group(1)
 
-		m = re.search("""A new live event has been submitted.
- Someone with the following email (.*@.*) responded to the survey\\n""", referenced_message.content)
+		m = re.search("""A new live event has been submitted.\\n Someone with the following email (.*@.*) responded to the survey\\n""", referenced_message.content, flag=re.MULTILINE)
 		if(m is None):
 			await message.reply("Email not found in referenced message.")
 			return
 		email = m.group(1)
 
-		m = re.search('(?i)name: *(.*)\\n', content)
+		m = re.search('(?i)name: *(.*)', content)
 		if(m is None):
 			await message.reply(f"You must specify a name.\n{example_usage}")
 			return
@@ -93,7 +92,7 @@ def add_module(client):
 
 		reason = None
 		if(rejected):
-			m = re.search('(?i)reason: *(.*)\\n', content)
+			m = re.search('(?i)reason: *(.*)', content)
 			if(m is None):
 				await message.reply(f"You must specify a reason\n{example_usage}")
 				return
