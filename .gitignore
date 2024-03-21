@@ -1,3 +1,4 @@
 token.secret
 __pycache__/
 *.swp
+*.secret
