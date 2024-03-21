@@ -42,7 +42,6 @@ def add_module(client):
 	@client.event
 	async def on_message(message):
 		if(not is_email_sender(message.author)):
-			await message.reply("You are not authorized to send live events emails.")
 			return
 		if(message.reference is None):
 			# this isnt a reply
