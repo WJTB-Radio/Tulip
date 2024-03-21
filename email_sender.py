@@ -60,7 +60,7 @@ def add_module(client):
 		embed_content = referenced_message.embeds[0].description
 
 		date = None
-		m = re.search(r'(?i) ?\*\* ?What is the date of the event ?\? ?\*\* ?\n ?([1-9]*-[1-9]*-[1-9]*) ?\n', embed_content, re.M)
+		m = re.search(r'(?i) ?\*\* ?What is the date of the event ?\? ?\*\* ?\n ?([0-9]*-[0-9]*-[0-9]*) ?', embed_content, re.M)
 		if(not m is None):
 			datestring = m.group(1)
 			try:
