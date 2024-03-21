@@ -19,7 +19,7 @@ Our apologies,
 The WJTB Team
 """
 
-def send_live_events_email(name, email, event_name, date, accepted, reason):
+def send_live_events_email(name, email, event_name, date, reason):
 	live_events_email = None
 	with open("live_events_email.secret", "r") as f:
 		live_events_email = f.read()
@@ -33,7 +33,7 @@ def send_live_events_email(name, email, event_name, date, accepted, reason):
 
 	msg = EmailMessage()
 
-	accepted = False
+	accepted = reason is None
 	filled_template = acceptance_template if accepted else rejection_template
 	filled_template = filled_template.format(name=name, event_name=event_name, date=date.strftime('%A, %B %d, %Y'), reason=reason)
 	msg.set_content(filled_template)

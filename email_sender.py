@@ -45,9 +45,9 @@ def add_module(client):
 			# this isnt a reply
 			return
 		channel = message.channel
-		content = message.content.lstrip()+"\n\n"
 		if(channel.name != "upcoming-events"):
 			return
+		content = message.content.lstrip()+"\n\n"
 		accepted = content.startswith('✅')
 		rejected = content.startswith('❌')
 		if(not (accepted or rejected)):
@@ -96,6 +96,6 @@ def add_module(client):
 				return
 			reason = m.group(1)
 
-		sent_message = live_events_email.send_live_events_email(name, email, event_name, date, accepted, reason)
+		sent_message = live_events_email.send_live_events_email(name, email, event_name, date, reason)
 		await message.reply(f"Email sent ✅\n```{sent_message}```")
 
