@@ -1,4 +1,3 @@
-import date
 import smtplib
 from email.message import EmailMessage
 
@@ -20,7 +19,7 @@ Our apologies,
 The WJTB Team
 """
 
-def send_live_events_email(name, email, event_name, accepted, reason):
+def send_live_events_email(name, email, event_name, date, accepted, reason):
 	live_events_email = None
 	with open("live_events_email.secret", "r") as f:
 		live_events_email = f.read()

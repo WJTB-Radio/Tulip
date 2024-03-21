@@ -96,6 +96,6 @@ def add_module(client):
 				return
 			reason = m.group(1)
 
-		sent_message = live_events_email.send_live_events_email(name, email, event_name, accepted, reason)
+		sent_message = live_events_email.send_live_events_email(name, email, event_name, date, accepted, reason)
 		await message.reply(f"Email sent ✅\n```{sent_message}```")
 
