@@ -34,7 +34,7 @@ Example Acceptance Usage:
 ```
 ✅
 name: Ian Henry Atkins
-email: iha4@njit.edu, optional
+email: iha4@njit.edu, optional\
 ```
 """
 
@@ -67,18 +67,19 @@ def add_module(client):
 				await message.reply(f'Invalid date \'{datestring}\'\n date must be in yyyy-mm-dd format.')
 				return
 		else:
-			await message.reply(f'Could not find date in referenced message.')
+			await message.reply('Could not find date in referenced message.')
 			return
 
 		m = re.search('(?i)What is the name of the event\\?\\n([0-9]+-[0-9]+-[0-9]+)\\n', referenced_message.content)
 		if(m is None):
-			await message.reply(f'Could not find date in referenced message.')
+			await message.reply('Could not find name of event in referenced message.')
 			return
 		event_name = m.group(1)
 
-		m = re.search('(?i)email: *(.*)\\n', content)
+		m = re.search("""A new live event has been submitted.
+ Someone with the following email (.*@.*) responded to the survey\\n""", referenced_message.content)
 		if(m is None):
-			await message.reply(f"You must specify an email.\n{example_usage}")
+			await message.reply("Email not found in referenced message.")
 			return
 		email = m.group(1)
 
