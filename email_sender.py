@@ -55,9 +55,12 @@ def add_module(client):
 		if(not (accepted or rejected)):
 			return
 		referenced_message = await channel.fetch_message(message.reference.message_id)
+		if(len(referenced_message.embeds) <= 0):
+			return
+		embed_content = referenced_message.embeds[0].description
 
 		date = None
-		m = re.search('(?i)What is the date of the event\\?\\n([0-9]+-[0-9]+-[0-9]+)\\n', referenced_message.content)
+		m = re.search('(?i)\*\*What is the date of the event\?\*\*\\\n([0-9]+-[0-9]+-[0-9]+)\\n', embed_content)
 		if(not m is None):
 			datestring = m.group(1)
 			try:
@@ -69,7 +72,7 @@ def add_module(client):
 			await message.reply('Could not find date in referenced message.')
 			return
 
-		m = re.search('(?i)What is the name of the event\\?\\n([0-9]+-[0-9]+-[0-9]+)\\n', referenced_message.content)
+		m = re.search('(?i)\*\*What is the name of the event\\?\*\*\\n([0-9]+-[0-9]+-[0-9]+)\\n', embed_content)
 		if(m is None):
 			await message.reply('Could not find name of event in referenced message.')
 			return
