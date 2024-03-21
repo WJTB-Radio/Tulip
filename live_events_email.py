@@ -20,6 +20,17 @@ The WJTB Team
 """
 
 def send_live_events_email(name, email, event_name, accepted, reason):
+	live_events_email = None
+	with open("live_events_email.secret", "r") as f:
+		live_events_email = f.read()
+	if(live_events_email is None):
+		return "Config error: no live events email"
+	live_events_password = None
+	with open("live_events_password.secret", "r") as f:
+		live_events_password = f.read()
+	if(live_events_password is None):
+		return "Config error: no live events password"
+
 	msg = EmailMessage()
 
 	accepted = False
@@ -33,7 +44,7 @@ def send_live_events_email(name, email, event_name, accepted, reason):
 
 	s = smtplib.SMTP('smtp.gmail.com', port=587)
 	s.starttls()
-	s.login(os.environ["TULIP_LIVE_EVENTS_EMAIL"], os.environ["TULIP_LIVE_EVENTS_PASSWORD"])
+	s.login(live_events_email, live_events_password)
 
 	s.send_message(msg)
 	s.quit()
