@@ -15,7 +15,7 @@ import output
 def convert_image_list(images: str):
 	converted = ""
 	for image in images.split(" "):
-		converted += util.convert_url(image)
+		converted += util.convert_image(image)
 	return converted
 
 def add_commands(tree):
