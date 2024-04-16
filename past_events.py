@@ -20,8 +20,13 @@ def convert_image_list(images: str):
 
 def add_commands(tree):
 	@tree.command(name="addpastevent", description="Add a past event.", guild=discord.Object(id=util.GUILD_ID))
-	async def addpastevent(context, name:str, desc:str, date:datetime.date, images:str):
+	async def addpastevent(context, name:str, desc:str, date:str, images:str):
 		if(not await util.check_admin(context)):
+			return
+		try:
+			date = datetime.strptime(date, '%m/%d/%Y')
+		except ValueError:
+			await context.repsonse.send_message("Date must be in MM/DD/YYYY format.")
 			return
 		con = sqlite.connect(util.DB_PATH)
 		cur = con.cursor()
@@ -63,11 +68,18 @@ def add_commands(tree):
 	async def editpastevent(context, name:str, property:str, value:str):
 		if(not await util.check_admin(context)):
 			return
-		properties = ["name", "desc", "images"]
+		properties = ["name", "desc", "date", "images"]
 		if(not property in properties):
 			await context.response.send_message(f"\"{property}\" is not a valid property.\nThe valid properties are ```{properties}```")
 			return
-		images = convert_image_list(images)
+		if(property == "images"):
+			value = convert_image_list(value)
+		elif(property == "date"):
+			try:
+				value = datetime.strptime(value, '%m/%d/%Y')
+			except ValueError:
+				await context.repsonse.send_message("Date must be in MM/DD/YYYY format.")
+				return
 		con = sqlite.connect(util.DB_PATH)
 		cur = con.cursor()
 		result = cur.execute(f"SELECT {property} FROM past_events WHERE name = ?", (name,)).fetchone()
