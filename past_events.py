@@ -1,5 +1,5 @@
 import discord
-from datetime import *
+import datetime
 from pytz import timezone
 from discord.ext import commands
 import sqlite3 as sqlite
@@ -12,9 +12,15 @@ import asyncio
 import util
 import output
 
+def convert_image_list(images: str):
+	converted = ""
+	for image in images.split(" "):
+		converted += util.convert_url(image)
+	return converted
+
 def add_commands(tree):
 	@tree.command(name="addpastevent", description="Add a past event.", guild=discord.Object(id=util.GUILD_ID))
-	async def addpastevent(context, name:str, desc:str, date:str, images:str):
+	async def addpastevent(context, name:str, desc:str, date:datetime.date, images:str):
 		if(not await util.check_admin(context)):
 			return
 		con = sqlite.connect(util.DB_PATH)
@@ -24,6 +30,7 @@ def add_commands(tree):
 			await context.response.send_message(f"Error: There is already a past event named {name}")
 			con.close()
 			return
+		images = convert_image_list(images)
 		cur.execute("INSERT INTO past_events(name, desc, date, images) VALUES(?, ?, ?, ?)", (name, desc, date, images))
 		con.commit()
 		con.close()
@@ -56,10 +63,11 @@ def add_commands(tree):
 	async def editpastevent(context, name:str, property:str, value:str):
 		if(not await util.check_admin(context)):
 			return
-		properties = ["name", "desc", "date", "images"]
+		properties = ["name", "desc", "images"]
 		if(not property in properties):
 			await context.response.send_message(f"\"{property}\" is not a valid property.\nThe valid properties are ```{properties}```")
 			return
+		images = convert_image_list(images)
 		con = sqlite.connect(util.DB_PATH)
 		cur = con.cursor()
 		result = cur.execute(f"SELECT {property} FROM past_events WHERE name = ?", (name,)).fetchone()
