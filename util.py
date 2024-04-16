@@ -104,6 +104,9 @@ def format_property(property, value, day):
 	return value
 
 def convert_image(url):
+	if(url.find("wjtb.njit.edu") != -1):
+		# we dont need to convert our own urls
+		return url
 	# discord doesnt work as a cdn anymore so we have to use github instead
 	subprocess_result = subprocess.run(["/var/services/homes/admin/tulip/resize.sh", url], capture_output=True)
 	url = subprocess_result.stdout.decode("utf-8").strip()
