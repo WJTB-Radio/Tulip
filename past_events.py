@@ -36,7 +36,7 @@ def add_commands(tree):
 			con.close()
 			return
 		images = convert_image_list(images)
-		cur.execute("INSERT INTO past_events(name, desc, date, images) VALUES(?, ?, ?, ?)", (name, desc, date, images))
+		cur.execute("INSERT INTO past_events(name, desc, date, images) VALUES(?, ?, ?, ?)", (name, desc, date.strftime("%Y/%m/%d"), images))
 		con.commit()
 		con.close()
 		await context.response.send_message(f"{name} has been added to the past events page.\nIt may take a few minutes to update on the website.")
@@ -76,7 +76,7 @@ def add_commands(tree):
 			value = convert_image_list(value)
 		elif(property == "date"):
 			try:
-				value = datetime.strptime(value, '%m/%d/%Y')
+				value = datetime.strptime(value, '%m/%d/%Y').strftime("%Y/%m/%d")
 			except ValueError:
 				await context.repsonse.send_message("Date must be in MM/DD/YYYY format.")
 				return

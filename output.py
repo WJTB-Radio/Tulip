@@ -78,11 +78,11 @@ def fix_line_breaks(text):
 def past_events():
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
-	result = cur.execute(f"SELECT name, desc, date, images FROM past_events ORDER BY date DESC")
+	result = cur.execute(f"SELECT name, desc, date, images FROM past_events ORDER BY date")
 	events = []
 	row = result.fetchone()
 	while(not row is None):
-		date = row[2].strftime('%A, %B %d %Y')
+		date = datetime.strptime(row[2], "%Y/%m/%d").strftime("%A, %B %d %Y")
 		event = {
 				"name":row[0],
 				"desc":fix_line_breaks(row[1]),
