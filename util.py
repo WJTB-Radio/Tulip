@@ -104,7 +104,7 @@ def format_property(property, value, day):
 	return value
 
 def convert_image(url):
-	if(url.find("wjtb.njit.edu") != -1 || url.find("raw.githubusercontent.com") != -1):
+	if(url.find("wjtb.njit.edu") != -1 or url.find("raw.githubusercontent.com") != -1):
 		# we dont need to convert our own urls or urls we've already converted
 		return url
 	# discord doesnt work as a cdn anymore so we have to use github instead
