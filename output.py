@@ -82,7 +82,7 @@ def past_events():
 	events = []
 	row = result.fetchone()
 	while(not row is None):
-		date = row[2].strftime('%A, %B %d %Y')
+		date = datetime.strptime(row[2], '%A, %B %d %Y')
 		event = {
 				"name":row[0],
 				"desc":fix_line_breaks(row[1]),
