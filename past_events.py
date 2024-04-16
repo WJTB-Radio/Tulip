@@ -13,10 +13,10 @@ import util
 import output
 
 def convert_image_list(images: str):
-	converted = ""
+	converted = []
 	for image in images.split(" "):
-		converted += util.convert_image(image)
-	return converted
+		converted.append(util.convert_image(image))
+	return " ".join(converted)
 
 def add_commands(tree):
 	@tree.command(name="addpastevent", description="Add a past event.", guild=discord.Object(id=util.GUILD_ID))
