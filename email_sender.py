@@ -1,18 +1,11 @@
+import asyncio
 import discord
 from datetime import *
-from pytz import timezone
-from discord.ext import commands
-import sqlite3 as sqlite
-from discord import app_commands
-import sys
-import os
-from threading import Timer
-import asyncio
 import re
 
-import util
-import output
 import live_events_email
+import live_events_calendar
+import output
 
 def is_email_sender(user):
 	if(not isinstance(user, discord.Member)):
@@ -50,7 +43,8 @@ def add_module(client):
 		content = message.content.lstrip()+"\n\n"
 		accepted = content.startswith('✅')
 		rejected = content.startswith('❌')
-		if(not (accepted or rejected)):
+		calendaronly = content.startswith('📅') or content.startswith('🗓️') or content.startswith('📆')
+		if(not (accepted or rejected or calendaronly)):
 			return
 		referenced_message = await channel.fetch_message(message.reference.message_id)
 		if(len(referenced_message.embeds) <= 0):
@@ -82,11 +76,13 @@ def add_module(client):
 			return
 		email = m.group(1)
 
-		m = re.search('(?i)name: *(.*)', content)
-		if(m is None):
-			await message.reply(f"You must specify the name of the person this email is directed towards.\n{example_usage}")
-			return
-		name = m.group(1)
+		name = ""
+		if(not calendaronly):
+			m = re.search('(?i)name: *(.*)', content)
+			if(m is None):
+				await message.reply(f"You must specify the name of the person this email is directed towards.\n{example_usage}")
+				return
+			name = m.group(1)
 
 		reason = None
 		if(rejected):
@@ -96,6 +92,22 @@ def add_module(client):
 				return
 			reason = m.group(1)
 
+		calendar_error = live_events_calendar.add_calendar_event(embed_content)
+		if(calendar_error is not None):
+			await message.reply(f"❌ Error: \n{calendar_error}")
+			return
+		if(calendaronly):
+			await message.reply(
+				f"This event has been added to the live events calendar. It may take a few minutes for the update to propagate."
+			)
+			output.update()
+			await asyncio.sleep(5)
+			output.push()
+			return
 		sent_message = live_events_email.send_live_events_email(name, email, event_name, date, reason)
-		await message.reply(f"Email sent ✅\n```{sent_message}```")
-
+		await message.reply(
+			f"Email sent ✅\n```{sent_message}```\n"
+			f"This event has been added to the live events calendar. It may take a few minutes for the update to propagate.")
+		output.update()
+		await asyncio.sleep(5)
+		output.push()

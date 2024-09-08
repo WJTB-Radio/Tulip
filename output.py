@@ -12,6 +12,7 @@ import os
 from threading import Timer
 import asyncio
 
+import live_events_calendar
 
 nothing_playing_error = json.dumps({"name":"", "error":"no-show", "end_time":60*60*24})
 def playing():
@@ -162,6 +163,8 @@ def update():
 		file.write(gallery(None))
 	with open(f"{util.show_data_path}/gallery_top.json", "w") as file:
 		file.write(gallery(3))
+	with open(f"{util.show_data_path}/live_events_calendar.ics", "w") as file:
+		file.writelines(live_events_calendar.export_calendar())
 
 def push():
 	os.system(f"{util.show_data_path}/push.sh")	

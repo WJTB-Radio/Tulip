@@ -21,6 +21,7 @@ import past_events
 import staff
 import gallery
 import email_sender
+import live_events_calendar
 
 if(len(sys.argv) != 3):
 	print("please supply a path to the sqlite3 database and a path to the showdata repository as commandline arguments")
@@ -41,6 +42,7 @@ djs.add_commands(tree)
 admin.add_commands(tree)
 past_events.add_commands(tree)
 staff.add_commands(tree)
+live_events_calendar.add_commands(tree)
 
 gallery.add_module(client)
 email_sender.add_module(client)
