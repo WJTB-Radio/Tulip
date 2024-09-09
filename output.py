@@ -14,41 +14,6 @@ import asyncio
 
 import live_events_calendar
 
-nothing_playing_error = json.dumps({"name":"", "error":"no-show", "end_time":60*60*24})
-def playing():
-	dt = datetime.now(timezone("US/Eastern"))
-	w = dt.weekday()
-	if(w >= 5):
-		# we are on a weekend
-		# nothing is playing rn
-		return nothing_playing_error
-	else:
-		# we are on a weekday
-		# something might be playing right now
-		day = util.days_of_week[w]
-		time = dt.second+dt.minute*60+dt.hour*60*60
-		con = sqlite.connect(util.DB_PATH)
-		cur = con.cursor()
-		result = cur.execute(f"SELECT name, end_time FROM {day} WHERE start_time < ? AND end_time > ? AND is_running = 1", (time, time)).fetchone()
-		if(result is None):
-			result = cur.execute(f"SELECT start_time, name FROM {day} WHERE start_time > ? ORDER BY start_time", (time, )).fetchone()
-			con.close()
-			if(result is None):
-				return nothing_playing_error
-			else:
-				return json.dumps({
-						"name":result[1],
-						"error":"no-show",
-						"end_time":result[0],
-					})
-		else:
-			con.close()
-			return json.dumps({
-					"name":result[0],
-					"error":"",
-					"end_time":result[1],
-				})
-
 def shows(day):
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
@@ -150,8 +115,6 @@ def get_wait_time():
 	return (next_run_time - now).total_seconds()
 
 def update():
-	with open(f"{util.show_data_path}/playing.json", "w") as file:
-		file.write(playing())
 	for day in util.days_of_week:
 		with open(f"{util.show_data_path}/{day}.json", "w") as file:
 			file.write(shows(day))
