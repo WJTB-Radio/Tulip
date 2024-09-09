@@ -42,20 +42,23 @@ def add_calendar_event(embed_text):
 	if(date is None):
 		return "Couldn't parse date"
 	try:
-		setup = datetime.strptime(date+' '+parse_response_field(questions['setup'], embed_text), datetime_format).strftime(datetime_format)
+		setup = parse_response_field(questions['setup'], embed_text)
+		setup = None if setup is None else datetime.strptime(date+' '+setup, datetime_format).strftime(datetime_format)
 	except ValueError as e:
 		print(e)
 		return "Unknown format for setup time"
 	if(setup is None):
 		return "Couldn't parse setup"
 	try:
-		start = datetime.strptime(date+' '+parse_response_field(questions['start'], embed_text), datetime_format).strftime(datetime_format)
+		start = parse_response_field(questions['start'], embed_text)
+		start = None if start is None else datetime.strptime(date+' '+start, datetime_format).strftime(datetime_format)
 	except ValueError:
 		return "Unknown format for start time"
 	if(start is None):
 		return "Couldn't parse start"
 	try:
-		end = datetime.strptime(date+' '+parse_response_field(questions['end'], embed_text), datetime_format).strftime(datetime_format)
+		end = parse_response_field(questions['end'], embed_text)
+		end = None if end is None else datetime.strptime(date+' '+end, datetime_format).strftime(datetime_format)
 	except ValueError:
 		return "Unknown format for end time"
 	if(end is None):
