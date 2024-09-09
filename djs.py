@@ -27,7 +27,7 @@ async def set_is_running(context, day, is_running):
 	username = (context.user.name+"#"+context.user.discriminator)
 	con = sqlite.connect(util.DB_PATH)
 	cur = con.cursor()
-	dt = datetime.now(timezone("US/Eastern"))
+	dt = datetime.now(timezone("America/New_York"))
 	w = dt.weekday()
 	weekend = False
 	if(w >= 5):

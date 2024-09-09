@@ -109,7 +109,7 @@ def gallery(limit):
 			})
 
 def get_wait_time():
-	now = datetime.now(timezone("US/Eastern"))
+	now = datetime.now(timezone("America/New_York"))
 	last_run_time = now.replace(minute=now.minute // 5 * 5, second=0, microsecond=0)
 	next_run_time = last_run_time + timedelta(minutes=5, seconds=30) # give an extra few seconds of leeway
 	return (next_run_time - now).total_seconds()

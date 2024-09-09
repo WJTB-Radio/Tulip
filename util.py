@@ -20,7 +20,7 @@ DB_PATH = ""
 def get_timestamp(time_seconds, w, end_time_seconds=None):
 	if(end_time_seconds is None):
 		end_time_seconds = time_seconds
-	cur_dt = datetime.now(timezone("US/Eastern"))
+	cur_dt = datetime.now(timezone("America/New_York"))
 	cur_w = cur_dt.weekday()
 	if(w < cur_w):
 		w += 7

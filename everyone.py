@@ -28,7 +28,7 @@ def add_commands(tree):
 	@tree.command(name="nowplaying", description="Check the currently playing show.", guild=discord.Object(id=util.GUILD_ID))
 	async def nowplaying(context):
 		message = ""
-		dt = datetime.now(timezone("US/Eastern"))
+		dt = datetime.now(timezone("America/New_York"))
 		w = dt.weekday()
 		if(w >= 5):
 			message = "Nothing is playing right now."
