@@ -5,6 +5,7 @@ import util
 from datetime import datetime
 import sqlite3 as sqlite
 from ics import Calendar, Event
+from pytz import timezone
 
 datetime_format = "%Y-%m-%d %H:%M"
 human_time_format = "%I:%M %p / %H:%M"
@@ -154,8 +155,8 @@ def export_calendar():
 		cohost_agreement = row[14]
 
 		event = Event(name=name,
-					begin=start,
-					end=end,
+					begin=timezone("America/New_York").localize(setup),
+					end=timezone("America/New_York").localize(end),
 					location=location,
 					description=(
 						f'Setup Time: {setup.strftime(human_time_format)}\n'
