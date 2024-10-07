@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd /var/services/homes/admin/show_data
+cd /home/admin/show_data
 
 if [ -z "$1" ]
 then
@@ -15,7 +15,7 @@ curl -s $1 -o "${filename}_r.jpg"
 if [ $? != 0 ]
 then
 	>&2 echo "error: failed to download image"
-	rm /var/services/homes/admin/show_data/*.jpg
+	rm /home/admin/show_data/*.jpg
 	exit
 fi
 
@@ -24,7 +24,7 @@ convert "${filename}_r.jpg" -resize 750000@ "${filename}_c.jpg"
 if [ $? != 0 ]
 then
 	>&2 echo "error: failed to convert image"
-	rm /var/services/homes/admin/show_data/*.jpg
+	rm /home/admin/show_data/*.jpg
 	exit
 fi
 
@@ -39,6 +39,6 @@ fi
 
 mv "${filename}_c.jpg" ./images/${hashed}.jpg
 
-rm /var/services/homes/admin/show_data/*.jpg
+rm /home/admin/show_data/*.jpg
 
 echo ${hashed}.jpg
