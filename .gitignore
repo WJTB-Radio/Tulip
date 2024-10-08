@@ -2,3 +2,5 @@ token.secret
 __pycache__/
 *.swp
 *.secret
+restart_stream.sh
+
