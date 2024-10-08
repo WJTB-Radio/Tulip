@@ -9,5 +9,5 @@ def add_commands(tree):
 			return
 		subprocess_result = subprocess.run(["/home/admin/tulip/restart_stream.sh"], capture_output=True)
 		result = subprocess_result.stdout.decode("utf-8").strip()
-		message = "The stream has been restarted. BUTT should reconnect." if result == "ok" else "Something went wrong, ask your local web person for help."
+		message = "The stream has been restarted. BUTT should reconnect." if result.endswith("ok") else "Something went wrong, ask your local web person for help."
 		await context.response.send_message(message)
