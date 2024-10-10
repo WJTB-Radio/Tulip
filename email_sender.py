@@ -91,10 +91,10 @@ def add_module(client):
 				await message.reply(f"You must specify a reason\n{example_usage}")
 				return
 			reason = m.group(1)
-
-		calendar_error = live_events_calendar.add_calendar_event(embed_content)
-		if(calendar_error is not None):
-			await message.reply(f"❌ Error: \n{calendar_error}")
+		if(accepted):
+			calendar_error = live_events_calendar.add_calendar_event(embed_content)
+			if(calendar_error is not None):
+				await message.reply(f"❌ Error: \n{calendar_error}")
 		if(calendaronly):
 			if(calendar_error is not None):
 				await message.reply(
@@ -106,8 +106,8 @@ def add_module(client):
 			return
 		sent_message = live_events_email.send_live_events_email(name, email, event_name, date, reason)
 		await message.reply(
-			f"Email sent ✅\n```{sent_message}```\n"
-			f"This event has been added to the live events calendar. It may take a few minutes for the update to propagate.")
+			f"Email sent ✅\n```{sent_message}```\n"+
+			(f"This event has been added to the live events calendar. It may take a few minutes for the update to propagate." if accepted else ""))
 		output.update()
 		await asyncio.sleep(5)
 		output.push()
