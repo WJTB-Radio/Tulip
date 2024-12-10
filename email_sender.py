@@ -95,8 +95,11 @@ def add_module(client):
 			calendar_error = live_events_calendar.add_calendar_event(embed_content)
 			if(calendar_error is not None):
 				await message.reply(f"❌ Error: \n{calendar_error}")
-		if(calendaronly):
+		elif(calendaronly):
+			calendar_error = live_events_calendar.add_calendar_event(embed_content)
 			if(calendar_error is not None):
+				await message.reply(f"❌ Error: \n{calendar_error}")
+			else:
 				await message.reply(
 					f"This event has been added to the live events calendar. It may take a few minutes for the update to propagate."
 				)
