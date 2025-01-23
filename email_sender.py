@@ -99,10 +99,10 @@ def add_module(client):
 				await message.reply(
 					f"This event has been added to the live events calendar. It may take a few minutes for the update to propagate."
 				)
+			if(calendaronly):
 				output.update()
 				await asyncio.sleep(5)
 				output.push()
-			if(calendaronly):
 				return
 		sent_message = live_events_email.send_live_events_email(name, email, event_name, date, reason)
 		await message.reply(
