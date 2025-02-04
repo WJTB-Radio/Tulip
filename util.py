@@ -108,7 +108,7 @@ def convert_image(url):
 		# we dont need to convert our own urls or urls we've already converted
 		return url
 	# discord doesnt work as a cdn anymore so we have to use github instead
-	subprocess_result = subprocess.run(["/home/admin/tulip/resize.sh", url], capture_output=True)
+	subprocess_result = subprocess.run(["./resize.sh", url], capture_output=True)
 	url = subprocess_result.stdout.decode("utf-8").strip()
 	if(url == ""):
 		# something went wrong, aka this image is invalid
