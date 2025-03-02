@@ -1,13 +1,6 @@
 import discord
 from datetime import *
-from pytz import timezone
-from discord.ext import commands
 import sqlite3 as sqlite
-from discord import app_commands
-import sys
-import os
-from threading import Timer
-import asyncio
 import re
 
 import util

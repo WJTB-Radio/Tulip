@@ -9,5 +9,9 @@ def add_commands(tree):
 			return
 		subprocess_result = subprocess.run(["./restart_stream.sh"], capture_output=True)
 		result = subprocess_result.stdout.decode("utf-8").strip()
+		stderr = subprocess_result.stderr.decode("utf-8").strip()
+		print("restarting stream")
+		print(f"stdout:\n{result}")
+		print(f"stderr:\n{stderr}")
 		message = "The stream has been restarted. BUTT should reconnect." if result.endswith("ok") else "Something went wrong, ask your local web person for help."
 		await context.response.send_message(message)
