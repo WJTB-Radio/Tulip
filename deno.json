@@ -1,0 +1,21 @@
+{
+	"tasks": {
+		"dev": "deno run --watch --allow-net --allow-sys --allow-write --allow-read --allow-env src/main.ts",
+		"run": "deno run --allow-net --allow-sys --allow-write --allow-read --allow-env src/main.ts",
+		"commands": "deno run --watch --allow-net --allow-write --allow-read --allow-env src/register_commands.ts"
+	},
+	"compilerOptions": {
+		"types": ["npm:@types/nodemailer@^6.4.17"]
+	},
+	"imports": {
+		"@oak/oak": "jsr:@oak/oak@^17.1.4",
+		"@discordeno/bot": "npm:@discordeno/bot@21",
+		"@discordeno/types": "npm:@discordeno/types@21",
+		"@dotenv": "https://deno.land/std@0.212.0/dotenv/mod.ts",
+		"date-fns": "npm:date-fns@^4.1.0",
+		"dd-cache-proxy": "npm:dd-cache-proxy@^2.6.0",
+		"nodemailer": "npm:nodemailer@^6.10.0",
+		"ics": "npm:ics@^3.8.1"
+	},
+	"fmt": { "useTabs": true }
+}
