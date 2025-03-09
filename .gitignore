@@ -1,2 +1,4 @@
 .env
 .vscode/
+tulip.db
+calendar.ics
