@@ -13,6 +13,8 @@ type SocketMessage = { type: "full"; messages: ChatMessage[] } | {
 	message: ChatMessage;
 };
 
+const MESSAGE_LIMIT = 30;
+
 export async function liveChatOnMessage(
 	message: typeof bot.transformers.$inferredTypes.message,
 ) {
@@ -21,7 +23,7 @@ export async function liveChatOnMessage(
 		channel.name != "upcoming-events" || !message.guildId
 	) return; // wrong channel
 	const member = await bot.rest.getMember(message.guildId, message.author.id);
-	if (messages.length > 100) {
+	if (messages.length > MESSAGE_LIMIT) {
 		messages.shift();
 	}
 	const chatMessage = {
@@ -47,9 +49,14 @@ export async function liveChatStartup() {
 	const channel = (await bot.rest.getChannels(guildId)).find((channel) =>
 		channel.name == "live-show-chat"
 	);
-	if (!channel) return; // no live show chat
+	if (!channel) {
+		bot.logger.error("no live-show-chat channel");
+		return;
+	}
 	messages = [];
-	const message_list = await bot.rest.getMessages(channel.id, { limit: 100 });
+	const message_list = await bot.rest.getMessages(channel.id, {
+		limit: MESSAGE_LIMIT,
+	});
 	for (const message of message_list) {
 		if (!message.content) continue;
 		const member = await bot.rest.getMember(guildId, message.author.id);
@@ -64,6 +71,7 @@ export async function liveChatStartup() {
 	app.use(router.routes());
 	app.use(router.allowedMethods());
 	app.listen({ port: 8010 });
+	bot.logger.info("started oak on port 8010");
 }
 
 const sockets: Set<WebSocket> = new Set();
