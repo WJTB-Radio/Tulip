@@ -5,13 +5,14 @@ import { Application, Context, Router } from "@oak/oak";
 interface ChatMessage {
 	content: string;
 	user: string;
+	id: string;
 }
 let messages: ChatMessage[] = [];
 
 type SocketMessage = { type: "full"; messages: ChatMessage[] } | {
 	type: "message";
 	message: ChatMessage;
-};
+} | { type: "delete"; id: string };
 
 const MESSAGE_LIMIT = 30;
 
@@ -20,21 +21,44 @@ export async function liveChatOnMessage(
 ) {
 	const channel = await bot.rest.getChannel(message.channelId);
 	if (
-		channel.name != "upcoming-events" || !message.guildId
+		channel.name != "live-show-chat" || !message.guildId
 	) return; // wrong channel
 	const member = await bot.rest.getMember(message.guildId, message.author.id);
-	if (messages.length > MESSAGE_LIMIT) {
+	if (messages.length >= MESSAGE_LIMIT) {
 		messages.shift();
 	}
 	const chatMessage = {
 		content: message.content,
 		user: member.nick ?? message.author.username,
+		id: message.id.toString(),
 	};
 	messages.push(chatMessage);
 	for (const socket of sockets) {
 		socket.send(
 			JSON.stringify(
-				{ type: "message", message: chatMessage } as SocketMessage,
+				{
+					type: "message",
+					message: chatMessage,
+				} as SocketMessage,
+			),
+		);
+	}
+}
+
+export async function liveChatDeleteMessage(props: {
+	id: bigint;
+	channelId: bigint;
+}) {
+	const channel = await bot.rest.getChannel(props.channelId);
+	if (
+		channel.name != "live-show-chat"
+	) return; // wrong channel
+	const id = props.id.toString();
+	messages = messages.filter((message) => id != message.id);
+	for (const socket of sockets) {
+		socket.send(
+			JSON.stringify(
+				{ type: "delete", id: props.id.toString() } as SocketMessage,
 			),
 		);
 	}
@@ -63,6 +87,7 @@ export async function liveChatStartup() {
 		messages.push({
 			content: message.content,
 			user: member.nick ?? message.author.username,
+			id: message.id,
 		});
 	}
 	const router = new Router();
