@@ -78,9 +78,9 @@ export async function liveChatStartup() {
 		return;
 	}
 	messages = [];
-	const message_list = await bot.rest.getMessages(channel.id, {
+	const message_list = (await bot.rest.getMessages(channel.id, {
 		limit: MESSAGE_LIMIT,
-	});
+	})).reverse();
 	for (const message of message_list) {
 		if (!message.content) continue;
 		const member = await bot.rest.getMember(guildId, message.author.id);
@@ -91,7 +91,7 @@ export async function liveChatStartup() {
 		});
 	}
 	const router = new Router();
-	router.get("/", getRecentMessages);
+	router.get("/", connectToChat);
 	const app = new Application();
 	app.use(router.routes());
 	app.use(router.allowedMethods());
@@ -101,7 +101,7 @@ export async function liveChatStartup() {
 
 const sockets: Set<WebSocket> = new Set();
 
-export function getRecentMessages(
+export function connectToChat(
 	ctx: Context,
 ) {
 	if (!ctx.isUpgradable) {
