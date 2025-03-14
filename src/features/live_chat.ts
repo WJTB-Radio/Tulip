@@ -78,10 +78,10 @@ export async function liveChatStartup() {
 		return;
 	}
 	messages = [];
-	const message_list = (await bot.rest.getMessages(channel.id, {
+	const messageList = (await bot.rest.getMessages(channel.id, {
 		limit: MESSAGE_LIMIT,
 	})).reverse();
-	for (const message of message_list) {
+	for (const message of messageList) {
 		if (!message.content) continue;
 		const member = await bot.rest.getMember(guildId, message.author.id);
 		messages.push({

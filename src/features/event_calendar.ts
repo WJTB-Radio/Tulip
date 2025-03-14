@@ -3,6 +3,7 @@ import ics from "ics";
 import { format, parse } from "date-fns";
 import { writeFile } from "node:fs/promises";
 import { env } from "../config.ts";
+import { bot } from "../bot.ts";
 
 function toIcsDateTime(
 	datetime: Date,
@@ -37,6 +38,12 @@ export function outputCalendar(events: LiveEvent[]) {
 		const setup = parseDate(event.setup);
 		const start = parseDate(event.start);
 		const end = parseDate(event.end);
+		bot.logger.info("start ", start);
+		bot.logger.info("end ", end);
+		bot.logger.info("setup ", setup);
+		bot.logger.info("start ics ", toIcsDateTime(start));
+		bot.logger.info("end ics ", toIcsDateTime(end));
+		bot.logger.info("setup ics ", toIcsDateTime(setup));
 		return {
 			title: event.name,
 			start: toIcsDateTime(setup),
