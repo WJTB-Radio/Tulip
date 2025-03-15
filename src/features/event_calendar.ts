@@ -7,14 +7,8 @@ import { bot } from "../bot.ts";
 
 function toIcsDateTime(
 	datetime: Date,
-): [number, number, number, number, number] {
-	return [
-		datetime.getFullYear(),
-		datetime.getMonth() + 1,
-		datetime.getDate(),
-		datetime.getHours(),
-		datetime.getMinutes(),
-	];
+): string {
+	return datetime.toISOString();
 }
 
 export function parseDate(s: string) {
@@ -38,12 +32,6 @@ export function outputCalendar(events: LiveEvent[]) {
 		const setup = parseDate(event.setup);
 		const start = parseDate(event.start);
 		const end = parseDate(event.end);
-		bot.logger.info("start ", start);
-		bot.logger.info("end ", end);
-		bot.logger.info("setup ", setup);
-		bot.logger.info("start ics ", toIcsDateTime(start));
-		bot.logger.info("end ics ", toIcsDateTime(end));
-		bot.logger.info("setup ics ", toIcsDateTime(setup));
 		return {
 			title: event.name,
 			start: toIcsDateTime(setup),
