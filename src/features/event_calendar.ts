@@ -1,11 +1,14 @@
 import { addLiveEvent, getLiveEvents, LiveEvent } from "./db.ts";
 import ical, { ICalEventData } from "ical-generator";
 import { format, parse } from "date-fns";
+import { tz } from "date-fns/tz";
 import { writeFile } from "node:fs/promises";
 import { env } from "../config.ts";
 
 export function parseDate(s: string) {
-	return parse(s, "yyyy-MM-dd HH:mm", new Date(0));
+	return parse(s, "yyyy-MM-dd HH:mm", new Date(0), {
+		in: tz("America/New_York"),
+	});
 }
 
 function formatTimeHuman(d: Date) {
@@ -32,7 +35,6 @@ export function outputCalendar(events: LiveEvent[]) {
 			location: event.location,
 			url: event.highlander_hub,
 			description: `\
-setup: ${setup.toISOString()}
 Setup Time: ${formatTimeHuman(setup)}
 Start Time: ${formatTimeHuman(start)}
 End Time: ${formatTimeHuman(end)}
