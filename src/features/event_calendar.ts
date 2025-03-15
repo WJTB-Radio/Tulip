@@ -8,8 +8,8 @@ import { env } from "../config.ts";
 export function parseDate(s: string) {
 	return new TZDate(
 		parse(s, "yyyy-MM-dd HH:mm", new Date(0)),
-		"America/New_York",
-	).withTimeZone("UTC");
+		"UTC",
+	).withTimeZone("America/New_York");
 }
 
 function formatTimeHuman(d: Date) {
