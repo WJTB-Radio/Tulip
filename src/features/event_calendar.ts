@@ -1,14 +1,15 @@
 import { addLiveEvent, getLiveEvents, LiveEvent } from "./db.ts";
 import ical, { ICalEventData } from "ical-generator";
 import { format, parse } from "date-fns";
-import { tz } from "@date-fns/tz";
+import { TZDate } from "@date-fns/tz";
 import { writeFile } from "node:fs/promises";
 import { env } from "../config.ts";
 
 export function parseDate(s: string) {
-	return parse(s, "yyyy-MM-dd HH:mm", new Date(0), {
-		in: tz("America/New_York"),
-	});
+	return new TZDate(
+		parse(s, "yyyy-MM-dd HH:mm", new Date(0)),
+		"America/New_York",
+	).withTimeZone("UTC");
 }
 
 function formatTimeHuman(d: Date) {
