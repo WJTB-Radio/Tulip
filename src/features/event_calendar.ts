@@ -8,8 +8,8 @@ import { env } from "../config.ts";
 export function parseDate(s: string) {
 	return new TZDate(
 		parse(s, "yyyy-MM-dd HH:mm", new Date(0)),
-		"UTC",
-	).withTimeZone("America/New_York");
+		"America/New_York",
+	).withTimeZone("UTC");
 }
 
 function formatTimeHuman(d: Date) {
@@ -33,6 +33,7 @@ export function outputCalendar(events: LiveEvent[]) {
 			summary: event.name,
 			start: setup,
 			end,
+			timezone: "UTC",
 			location: event.location,
 			url: event.highlander_hub,
 			description: `\
