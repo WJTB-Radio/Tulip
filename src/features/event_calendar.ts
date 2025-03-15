@@ -1,5 +1,5 @@
 import { addLiveEvent, getLiveEvents, LiveEvent } from "./db.ts";
-import ical from "ical-generator";
+import ical, { ICalEventData } from "ical-generator";
 import { format, parse } from "date-fns";
 import { writeFile } from "node:fs/promises";
 import { env } from "../config.ts";
@@ -21,7 +21,7 @@ export function startupCalendar() {
 }
 
 export function outputCalendar(events: LiveEvent[]) {
-	const calEvents = events.map((event) => {
+	const calEvents: ICalEventData[] = events.map((event) => {
 		const setup = parseDate(event.setup);
 		const start = parseDate(event.start);
 		const end = parseDate(event.end);
@@ -32,6 +32,7 @@ export function outputCalendar(events: LiveEvent[]) {
 			location: event.location,
 			url: event.highlander_hub,
 			description: `\
+setup: ${setup.toISOString()}
 Setup Time: ${formatTimeHuman(setup)}
 Start Time: ${formatTimeHuman(start)}
 End Time: ${formatTimeHuman(end)}
