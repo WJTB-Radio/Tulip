@@ -1,15 +1,8 @@
 import { addLiveEvent, getLiveEvents, LiveEvent } from "./db.ts";
-import ics from "ics";
+import ical from "ical-generator";
 import { format, parse } from "date-fns";
 import { writeFile } from "node:fs/promises";
 import { env } from "../config.ts";
-import { bot } from "../bot.ts";
-
-function toIcsDateTime(
-	datetime: Date,
-): string {
-	return datetime.toISOString();
-}
 
 export function parseDate(s: string) {
 	return parse(s, "yyyy-MM-dd HH:mm", new Date(0));
@@ -28,16 +21,16 @@ export function startupCalendar() {
 }
 
 export function outputCalendar(events: LiveEvent[]) {
-	const { error, value } = ics.createEvents(events.map((event) => {
+	const calEvents = events.map((event) => {
 		const setup = parseDate(event.setup);
 		const start = parseDate(event.start);
 		const end = parseDate(event.end);
 		return {
-			title: event.name,
-			start: toIcsDateTime(setup),
-			startInputType: "utc",
-			end: toIcsDateTime(end),
-			endInputType: "utc",
+			summary: event.name,
+			start: setup,
+			end,
+			location: event.location,
+			url: event.highlander_hub,
 			description: `\
 Setup Time: ${formatTimeHuman(setup)}
 Start Time: ${formatTimeHuman(start)}
@@ -53,14 +46,13 @@ People who can make announcements: ${event.announcement_people}
 Highlander Hub: ${event.highlander_hub}
 Cohost Agreement: ${event.cohost_agreement}
 `,
-			location: event.location,
 		};
-	}));
-	if (error || value == undefined) {
-		console.error(error);
-		return;
-	}
-	writeFile(env.CALENDAR_PATH, value);
+	});
+	const calendar = ical({
+		name: "WJTB Live Events Calendar",
+		events: calEvents,
+	});
+	writeFile(env.CALENDAR_PATH, calendar.toString());
 }
 
 const questions = {
