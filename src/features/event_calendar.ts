@@ -1,7 +1,7 @@
 import { addLiveEvent, getLiveEvents, LiveEvent } from "./db.ts";
 import ical, { ICalEventData } from "ical-generator";
 import { format, parse } from "date-fns";
-import { TZDate } from "@date-fns/tz";
+import { tz, TZDate } from "@date-fns/tz";
 import { writeFile } from "node:fs/promises";
 import { env } from "../config.ts";
 
@@ -13,7 +13,7 @@ export function parseDate(s: string) {
 }
 
 function formatTimeHuman(d: Date) {
-	return format(d, "hh:mm / HH:mm");
+	return format(d, "hh:mm / HH:mm", { in: tz("America/New_York") });
 }
 
 export function addEventToCalendar(event: LiveEvent) {
