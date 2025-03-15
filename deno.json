@@ -8,6 +8,7 @@
 		"types": ["npm:@types/nodemailer@^6.4.17"]
 	},
 	"imports": {
+		"@date-fns/tz": "npm:@date-fns/tz@^1.2.0",
 		"@oak/oak": "jsr:@oak/oak@^17.1.4",
 		"@discordeno/bot": "npm:@discordeno/bot@21",
 		"@discordeno/types": "npm:@discordeno/types@21",

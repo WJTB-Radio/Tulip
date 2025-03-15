@@ -1,7 +1,7 @@
 import { addLiveEvent, getLiveEvents, LiveEvent } from "./db.ts";
 import ical, { ICalEventData } from "ical-generator";
 import { format, parse } from "date-fns";
-import { tz } from "date-fns/tz";
+import { tz } from "@date-fns/tz";
 import { writeFile } from "node:fs/promises";
 import { env } from "../config.ts";
 
