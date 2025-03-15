@@ -11,7 +11,7 @@ function toIcsDateTime(
 	return [
 		datetime.getFullYear(),
 		datetime.getMonth() + 1,
-		datetime.getDay(),
+		datetime.getDate(),
 		datetime.getHours(),
 		datetime.getMinutes(),
 	];
