@@ -35,7 +35,9 @@ export function outputCalendar(events: LiveEvent[]) {
 		return {
 			title: event.name,
 			start: toIcsDateTime(setup),
+			startInputType: "utc",
 			end: toIcsDateTime(end),
+			endInputType: "utc",
 			description: `\
 Setup Time: ${formatTimeHuman(setup)}
 Start Time: ${formatTimeHuman(start)}
