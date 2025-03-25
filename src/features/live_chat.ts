@@ -36,7 +36,16 @@ export async function liveChatOnMessage(
 		user: member.nick ?? message.author.username,
 		id: message.id.toString(),
 	};
-	messages.push(chatMessage);
+	const id = message.id.toString();
+	let exists = false;
+	messages = messages.map((m) => {
+		if (m.id == id) {
+			m.content = message.content;
+			exists = true;
+		}
+		return m;
+	});
+	if (!exists) messages.push(chatMessage);
 	for (const socket of sockets) {
 		socket.send(
 			JSON.stringify(

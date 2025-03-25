@@ -2,6 +2,7 @@ import { bot } from "../bot.ts";
 import { emailSender } from "../features/email_sender.ts";
 import {
 	liveChatDeleteMessage,
+	liveChatMessageUpdate,
 	liveChatOnMessage,
 } from "../features/live_chat.ts";
 
@@ -16,7 +17,7 @@ bot.events.messageDelete = async (event) => {
 };
 
 bot.events.messageUpdate = async (message) => {
-	await liveChatOnMessage(message);
+	await liveChatMessageUpdate(message);
 };
 
 bot.events.messageDeleteBulk = async (event) => {

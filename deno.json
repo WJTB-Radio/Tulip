@@ -11,7 +11,7 @@
 		"@date-fns/tz": "npm:@date-fns/tz@^1.2.0",
 		"@oak/oak": "jsr:@oak/oak@^17.1.4",
 		"@discordeno/bot": "npm:@discordeno/bot@21",
-		"@discordeno/types": "npm:@discordeno/types@21",
+		"@discordeno/types": "npm:@discordeno/types@^21.0.0",
 		"@dotenv": "https://deno.land/std@0.212.0/dotenv/mod.ts",
 		"date-fns": "npm:date-fns@^4.1.0",
 		"dd-cache-proxy": "npm:dd-cache-proxy@^2.6.0",
