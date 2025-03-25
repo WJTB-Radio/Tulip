@@ -15,6 +15,10 @@ bot.events.messageDelete = async (event) => {
 	await liveChatDeleteMessage(event);
 };
 
+bot.events.messageUpdate = async (message) => {
+	await liveChatOnMessage(message);
+};
+
 bot.events.messageDeleteBulk = async (event) => {
 	for (const id of event.ids) {
 		await liveChatDeleteMessage({ id, channelId: event.channelId });

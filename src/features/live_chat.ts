@@ -9,10 +9,14 @@ interface ChatMessage {
 }
 let messages: ChatMessage[] = [];
 
-type SocketMessage = { type: "full"; messages: ChatMessage[] } | {
-	type: "message";
-	message: ChatMessage;
-} | { type: "delete"; id: string };
+type SocketMessage =
+	| { type: "full"; messages: ChatMessage[] }
+	| {
+		type: "message";
+		message: ChatMessage;
+	}
+	| { type: "delete"; id: string }
+	| { type: "edit"; id: string; content: string };
 
 const MESSAGE_LIMIT = 30;
 
@@ -59,6 +63,29 @@ export async function liveChatDeleteMessage(props: {
 		socket.send(
 			JSON.stringify(
 				{ type: "delete", id: props.id.toString() } as SocketMessage,
+			),
+		);
+	}
+}
+
+export async function liveChatMessageUpdate(
+	message: typeof bot.transformers.$inferredTypes.message,
+) {
+	const channel = await bot.rest.getChannel(message.channelId);
+	if (
+		channel.name != "live-show-chat"
+	) return; // wrong channel
+	const id = message.id.toString();
+	messages = messages.map((m) => {
+		if (m.id == id) {
+			m.content = message.content;
+		}
+		return m;
+	});
+	for (const socket of sockets) {
+		socket.send(
+			JSON.stringify(
+				{ type: "edit", id, content: message.content } as SocketMessage,
 			),
 		);
 	}
