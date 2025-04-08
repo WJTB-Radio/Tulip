@@ -124,7 +124,9 @@ export async function emailSender(
 		);
 	}
 
-	addEventToCalendar(liveEvent);
+	if (accepted) {
+		addEventToCalendar(liveEvent);
+	}
 
 	// reply to the email
 	const eventDate = format(
