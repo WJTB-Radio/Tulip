@@ -34,6 +34,7 @@ const rawBot = createBot({
 		member: {
 			id: true,
 			roles: true,
+			nick: true,
 		},
 		channel: {
 			id: true,
@@ -42,6 +43,7 @@ const rawBot = createBot({
 		user: {
 			id: true,
 			username: true,
+			globalName: true,
 			discriminator: true,
 		},
 		message: {

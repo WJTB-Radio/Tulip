@@ -33,7 +33,7 @@ export async function liveChatOnMessage(
 	}
 	const chatMessage = {
 		content: message.content,
-		user: member.nick ?? message.author.username,
+		user: member.nick ?? message.author.globalName ?? message.author.username,
 		id: message.id.toString(),
 	};
 	const id = message.id.toString();
@@ -122,7 +122,7 @@ export async function liveChatStartup() {
 		const member = await bot.rest.getMember(guildId, message.author.id);
 		messages.push({
 			content: message.content,
-			user: member.nick ?? message.author.username,
+			user: member.nick ?? message.author.globalName ?? message.author.username,
 			id: message.id,
 		});
 	}
