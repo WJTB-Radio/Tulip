@@ -30,6 +30,8 @@ const rawBot = createBot({
 			id: true,
 			guildId: true,
 			permissions: true,
+			position: true,
+			color: true,
 		},
 		member: {
 			id: true,
@@ -67,6 +69,9 @@ export const bot = createProxyCache(rawBot, {
 	cacheInMemory: {
 		guild: true,
 		role: true,
+		member: true,
+		channel: true,
+		user: true,
 		default: false,
 	},
 }); // By default, bot.logger will use an instance of the logger from @discordeno/bot, this logger supports depth and we need to change it, so we need to say to TS that we know what we are doing with as

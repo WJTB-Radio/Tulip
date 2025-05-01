@@ -4,6 +4,7 @@ import { Application, Context, Router } from "@oak/oak";
 
 interface ChatMessage {
 	content: string;
+	color: string | undefined;
 	user: string;
 	id: string;
 }
@@ -20,6 +21,27 @@ type SocketMessage =
 
 const MESSAGE_LIMIT = 30;
 
+async function getMemberColor(
+	guildId: bigint | string,
+	member: typeof bot.transformers.$inferredTypes.member,
+) {
+	const roles: [typeof bot.transformers.$inferredTypes.role] = await Promise
+		.all(
+			member.roles.map((roleId) => {
+				return bot.rest.getRole(guildId, roleId);
+			}),
+		);
+	let firstRole = undefined;
+	let firstPosition = undefined;
+	for (const role of roles) {
+		if (firstPosition == undefined || firstPosition < role.position) {
+			firstPosition = role.position;
+			firstRole = role;
+		}
+	}
+	return firstRole?.color?.toString(16);
+}
+
 export async function liveChatOnMessage(
 	message: typeof bot.transformers.$inferredTypes.message,
 ) {
@@ -34,6 +56,7 @@ export async function liveChatOnMessage(
 	const chatMessage = {
 		content: message.content,
 		user: member.nick ?? message.author.globalName ?? message.author.username,
+		color: await getMemberColor(message.guildId, member),
 		id: message.id.toString(),
 	};
 	const id = message.id.toString();
@@ -123,6 +146,7 @@ export async function liveChatStartup() {
 		messages.push({
 			content: message.content,
 			user: member.nick ?? message.author.globalName ?? message.author.username,
+			color: await getMemberColor(guildId, member),
 			id: message.id,
 		});
 	}
