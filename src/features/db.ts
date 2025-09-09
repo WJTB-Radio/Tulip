@@ -5,20 +5,21 @@ function connectDb() {
 	const db = new DatabaseSync(env.DB_PATH);
 	db.exec(`
 		CREATE TABLE IF NOT EXISTS live_events(
+			organizer_name TEXT,
+			announcement_people TEXT,
 			name TEXT,
-			setup TEXT,
+			club TEXT,
+			date TEXT,
 			start TEXT,
 			end TEXT,
-			organizer_name TEXT,
-			club TEXT,
+			setup TEXT,
 			highlander_hub TEXT,
-			location TEXT,
 			indoors TEXT,
+			location TEXT,
 			dress_code TEXT,
 			size_audience TEXT,
 			additional_equipment TEXT,
 			playlist_mood TEXT,
-			announcement_people TEXT,
 			cohost_agreement TEXT
 		);
 	`);
@@ -26,20 +27,21 @@ function connectDb() {
 }
 
 export interface LiveEvent {
+	organizer_name: string;
+	announcement_people: string;
 	name: string;
-	setup: string;
+	club: string;
+	date: string;
 	start: string;
 	end: string;
-	organizer_name: string;
-	club: string;
+	setup: string;
 	highlander_hub: string;
-	location: string;
 	indoors: string;
+	location: string;
 	dress_code: string;
 	size_audience: string;
 	additional_equipment: string;
 	playlist_mood: string;
-	announcement_people: string;
 	cohost_agreement: string;
 }
 
@@ -49,37 +51,39 @@ export function addLiveEvent(
 	const db = connectDb();
 	db.prepare(`
 		INSERT INTO live_events (
+			organizer_name,
+			announcement_people,
 			name,
-			setup,
+			club,
+			date,
 			start,
 			end,
-			organizer_name,
-			club,
+			setup,
 			highlander_hub,
-			location,
 			indoors,
+			location,
 			dress_code,
 			size_audience,
 			additional_equipment,
 			playlist_mood,
-			announcement_people,
 			cohost_agreement
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 	`).run(
+		event.organizer_name,
+		event.announcement_people,
 		event.name,
-		event.setup,
+		event.club,
+		event.date,
 		event.start,
 		event.end,
-		event.organizer_name,
-		event.club,
+		event.setup,
 		event.highlander_hub,
-		event.location,
 		event.indoors,
+		event.location,
 		event.dress_code,
 		event.size_audience,
 		event.additional_equipment,
 		event.playlist_mood,
-		event.announcement_people,
 		event.cohost_agreement,
 	);
 	const events = selectLiveEvents(db);
@@ -90,23 +94,24 @@ export function addLiveEvent(
 function selectLiveEvents(db: DatabaseSync): LiveEvent[] {
 	return db.prepare(`
 		SELECT 
+			organizer_name,
+			announcement_people,
 			name,
-			setup,
+			club,
+			date,
 			start,
 			end,
-			organizer_name,
-			club,
+			setup,
 			highlander_hub,
-			location,
 			indoors,
+			location,
 			dress_code,
 			size_audience,
 			additional_equipment,
 			playlist_mood,
-			announcement_people,
 			cohost_agreement
 		FROM live_events
-	`).all() as LiveEvent[];
+	`).all() as unknown as LiveEvent[];
 }
 
 export function getLiveEvents() {

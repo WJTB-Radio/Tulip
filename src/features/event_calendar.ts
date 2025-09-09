@@ -63,27 +63,27 @@ Cohost Agreement: ${event.cohost_agreement}
 const questions = {
 	"organizer_name":
 		"Full name and UCID - If the person running the event is not you, please list their name and UCID as well\\.",
+	"announcement_people":
+		"Please list the individuals who are authorized to make announcements or perform at this event\\.",
 	"name": "What is the name of the event\\?",
 	"club": "What club or organization are you affiliated with\\?",
 	"date": "What is the date of the event\\?",
 	"start": "When does your event start\\?",
 	"end": "When does your event end\\?",
-	"setup": "When do you want us to set up for your event\\?",
+	"setup": "When do you want WJTB to set up for your event\\?",
 	"highlander_hub":
 		"Please provide the link to your Highlander Hub event page \\(if available\\):",
 	"indoors": "Is the event outdoor or indoor\\?",
 	"location": "Where, specifically, is the event located\\?",
 	"dress_code": "What is the dress code for your event\\?",
 	"size_audience":
-		"What is the estimated size of the event\\? Who is the general audience\\? \\(Students, children, faculty, etc\\)",
+		"What is the estimated size of the event\\? Who is the general audience\\? \\(Students, children, faculty, etc\\.\\)",
 	"additional_equipment":
-		"Please list any additional equipment that you may need \\(mic stands, more than 2 mics, speakers facing in all directions, tarps, AC power, headphones, external outputs, extra monitors, etc\\)",
+		"Please list any additional equipment that you may need\\. \\(microphone stands, 2< microphones, speakers, tarps, AC power, external outputs, etc\\.\\)",
 	"playlist_mood":
-		"Please link a playlist \\(preferred\\) or describe a mood/genre you want for the event",
-	"announcement_people":
-		"Please list the names of all people who are qualified to make announcements or perform at this event\\. WJTB strictly prohibits anyone from using the microphones or equipment at the event- unless they are on this list\\. WJTB is not liable for any damage to WJTB equipment caused by these people\\.",
+		"Please link a playlist \\(preferred\\) or describe a mood/genre you want for the event\\.",
 	"cohost_agreement":
-		"If available to fulfill your request, WJTB must be listed as a cohost on your event for Student Senate purposes",
+		"If available to fulfill your request, WJTB Radio must be listed as a cohost on your event for Student Senate purposes\\.",
 };
 
 function parseQuestion(
