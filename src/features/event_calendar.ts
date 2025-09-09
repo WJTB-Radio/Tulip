@@ -64,7 +64,7 @@ const questions = {
 	"organizer_name":
 		"Full name and UCID - If the person running the event is not you, please list their name and UCID as well\\.",
 	"announcement_people":
-		"Please list the individuals who are authorized to make announcements or perform at this event\\.",
+		"Please list the individuals who are authorized to make announcements or perform at this event\\. WJTB strictly prohibits the use of equipment by individuals not explicitly included on this list\\. Unauthorized use is not permitted under any circumstances\\. WJTB is not responsible for any damage to or theft of its equipment\\. In the event of damage or loss, the hosting club will be held financially liable for all associated costs, regardless of who caused the incident\\.",
 	"name": "What is the name of the event\\?",
 	"club": "What club or organization are you affiliated with\\?",
 	"date": "What is the date of the event\\?",

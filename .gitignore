@@ -1,4 +1,6 @@
 .env
 .vscode/
 tulip.db
+tulip.old.db
 calendar.ics
+live_events_calendar.ics

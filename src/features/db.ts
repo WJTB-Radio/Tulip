@@ -111,7 +111,7 @@ function selectLiveEvents(db: DatabaseSync): LiveEvent[] {
 			playlist_mood,
 			cohost_agreement
 		FROM live_events
-	`).all() as unknown as LiveEvent[];
+	`).all() as LiveEvent[];
 }
 
 export function getLiveEvents() {
