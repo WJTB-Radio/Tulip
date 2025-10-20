@@ -1,18 +1,18 @@
 # Tulip is WJTB Radio's discord bot
 
-we are using deno and discordeno.
+Featuring Deno
 
-to develop:
+To Develop:
 ```bash
 deno task dev
 ```
 
-to run:
+To Run:
 ```bash
 deno task run
 ```
 
-to update commands:
+To Update Commands:
 ```bash
 deno task commands
 ```
